@@ -1,0 +1,2 @@
+C:\Users\danie\Documents\Hololens_Robot_Project\UWP\GeneratedProjects\UWP\Assembly-CSharp\Assembly-CSharp.csproj;x86
+C:\Users\danie\Documents\Hololens_Robot_Project\UWP\Hololens_Robot_Project\Hololens_Robot_Project.csproj;x86
