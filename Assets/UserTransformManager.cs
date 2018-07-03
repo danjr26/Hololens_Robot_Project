@@ -8,7 +8,7 @@ using System.IO;
 public class UserTransformManager : MonoBehaviour {
 	public static UserTransformManager instance;
 
-	public UserTransformRecorder recorder { get; private set; }
+	public UserTransformRecordEnvironment recorder { get; private set; }
 	public Arrow arrowPrefab;
 
 	private UserTransformable _focusedObject = null;
@@ -67,7 +67,7 @@ public class UserTransformManager : MonoBehaviour {
 	}
 
 	public void StartRecording(UserTransformableRecordable target) {
-		recorder = new UserTransformRecorder(target);
+		recorder = new UserTransformRecordEnvironment(target);
 	}
 
 	public void StopRecording() {

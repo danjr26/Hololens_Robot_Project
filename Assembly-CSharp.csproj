@@ -83,7 +83,7 @@
     <Compile Include="Assets\UserTransformAction.cs" />
     <Compile Include="Assets\UserTransformKeyframe.cs" />
     <Compile Include="Assets\UserTransformManager.cs" />
-    <Compile Include="Assets\UserTransformRecorder.cs" />
+    <Compile Include="Assets\UserTransformRecordEnvironment.cs" />
     <Compile Include="Assets\UserTransformRecording.cs" />
     <Reference Include="UnityEditor.StandardEvents">
       <HintPath>C:/Users/danie/Documents/Hololens_Robot_Project/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
