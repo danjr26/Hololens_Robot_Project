@@ -12,11 +12,15 @@ public class MenuOwner : MonoBehaviour {
 		}
 		set {
 			if (value) {
-				if (isMenuOpen)
-					Destroy(menu);
-				menu = Instantiate(menuPrefab);
-				menu.GetComponent<ObjectMenu>().Bind(gameObject);
-				BuildMenu();
+				try {
+					UserTransformManager.instance.focusedObject = null;
+					if (isMenuOpen) Destroy(menu);
+					menu = Instantiate(menuPrefab);
+					menu.GetComponent<ObjectMenu>().Bind(gameObject);
+					BuildMenu();
+				} catch (Exception e) {
+					RobotInterface.instance.SendCommand(e.Message + "\n" + e.StackTrace);
+				}
 			}
 			else if (isMenuOpen) {
 				Destroy(menu);

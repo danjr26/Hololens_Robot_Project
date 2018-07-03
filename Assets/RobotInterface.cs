@@ -3,6 +3,7 @@ using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using UnityEngine;
 
 #if NETFX_CORE
@@ -40,11 +41,11 @@ public class RobotInterface : MonoBehaviour {
 		
 	}
 
-	private async void StartConnection() {
+	private async Task StartConnection() {
 #if NETFX_CORE
 		try {
 			outSocket = new StreamSocket();
-			await outSocket.ConnectAsync(new HostName("10.13.196.62"), "9999");
+			await outSocket.ConnectAsync(new HostName("192.168.100.61"), "9999");
 			writer = new DataWriter(outSocket.OutputStream);
 			isConnected = true;
 			OutputText.instance.text = OutputText.instance.text + "\nConnection established.";
@@ -55,7 +56,7 @@ public class RobotInterface : MonoBehaviour {
 #endif
 	}
 
-	private async void SendCommand(string command) {
+	public async Task SendCommand(string command) {
 #if NETFX_CORE
 		try {
 			writer.WriteString(command);
@@ -68,9 +69,9 @@ public class RobotInterface : MonoBehaviour {
 #endif
 	}
 
-	public void Move(MoveCommand command) {
+	public async Task Move(MoveCommand command) {
 		//OutputText.instance.text = command.ToRAPID();
-		SendCommand(command.ToRAPID());
+		await SendCommand(command.ToRAPID());
 	}
 
 	public class MoveCommand {

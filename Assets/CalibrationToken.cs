@@ -25,20 +25,19 @@ public class CalibrationToken : UserTransformable {
 	void ConfirmPoint() {
 		try {
 			confirmedPoints[pointIndex] = transform.position;
-			if(pointIndex < 3) {
-				/*if (RobotInterface.instance.isConnected) {
+			if (pointIndex < 3) {
+				if (RobotInterface.instance.isConnected) {
 					RobotInterface.instance.Move(new RobotInterface.MoveCommand(
 						points[pointIndex], Quaternion.LookRotation(points[pointIndex])
 					));
 				}
-				UserTransformManager.instance.transformMode = UserTransformManager.TransformMode.translate;*/
+				UserTransformManager.instance.transformMode = UserTransformManager.TransformMode.translate;
 			} else {
-				/*CalculateConversion();
+				CalculateConversion();
 				GetComponent<MeshRenderer>().enabled = false;
-				GetComponent<MeshCollider>().enabled = false;*/
+				GetComponent<MeshCollider>().enabled = false;
 			}
 			pointIndex++;
-			
 		}
 		catch (Exception e) {
 			OutputText.instance.text = e.Message + "\n" + e.StackTrace;

@@ -9,8 +9,6 @@ public class UserTransformManager : MonoBehaviour {
 	public static UserTransformManager instance;
 
 	public UserTransformRecorder recorder { get; private set; }
-	//public RobotInterface robotInterface;
-
 	public Arrow arrowPrefab;
 
 	private UserTransformable _focusedObject = null;
@@ -24,7 +22,9 @@ public class UserTransformManager : MonoBehaviour {
 			}
 			_focusedObject = value;
 			transformMode = TransformMode.none;
-			_focusedObject.OnGainFocus();
+			if (_focusedObject != null) {
+				_focusedObject.OnGainFocus();
+			}
 		}
 	}
 
@@ -109,9 +109,7 @@ public class UserTransformManager : MonoBehaviour {
 			file.Position = 0;
 
 			BinaryReader reader = new BinaryReader(file);
-			OutputText.instance.text = "Got reader";
 			int n = reader.ReadInt32();
-			OutputText.instance.text = "n = " + n.ToString();
 
 			Vector3 position = new Vector3();
 			Quaternion rotation = new Quaternion();
@@ -131,13 +129,15 @@ public class UserTransformManager : MonoBehaviour {
 				recorder.CreateSnapshot(objectToApply.transform);
 			}
 
-			OutputText.instance.text = "done";
-
 			if (reader.ReadUInt32() != 0xffffffff)
 				throw new Exception("Invalid save file");
 		}
 		catch (Exception e) {
 			OutputText.instance.text = OutputText.instance.text + "\n" + e.Message + "\n" + e.StackTrace;
 		}
+	}
+
+	public void RunRecording() {
+
 	}
 }

@@ -48,7 +48,7 @@ public class HoloInputManager : MonoBehaviour {
 	GestureRecognizer navigationRecognizer;
 	InteractionManager interactionManager;
 
-	private int nPastHandPositions = 5;
+	private int nPastHandPositions = 10;
 	private List<Vector3> pastHandPositions;
 
 	public Vector3 handPosition { get; private set; }
