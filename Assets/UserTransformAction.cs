@@ -7,7 +7,7 @@ using UnityEngine;
 using System.IO;
 
 namespace Assets {
-	class UserTransformAction {
+	public class UserTransformAction {
 		public virtual async Task Execute(UserTransformKeyframe keyframe, Transform frameOfReference) { }
 
 		public static UserTransformAction FromBinary(ref BinaryReader reader) {

@@ -29,7 +29,7 @@ public class UserTransformableRecordable : UserTransformable {
 				menu.GetComponent<ObjectMenu>().AddButton(
 					"Save Recording",
 					delegate () {
-						UserTransformManager.instance.SaveRecording();
+						UserTransformManager.instance.SaveRecording("test.hrpsav");
 						isMenuOpen = false;
 					}
 				);
@@ -61,7 +61,7 @@ public class UserTransformableRecordable : UserTransformable {
 				"Load Recording",
 				delegate () {
 					UserTransformManager.instance.StartNewRecording(this);
-					UserTransformManager.instance.LoadRecording(gameObject);
+					UserTransformManager.instance.LoadRecording(this, "test.hrpsav");
 					isMenuOpen = false;
 				}
 			);
