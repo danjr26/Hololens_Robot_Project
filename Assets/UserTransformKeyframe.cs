@@ -7,7 +7,7 @@ using UnityEngine;
 using System.IO;
 
 namespace Assets {
-	class UserTransformKeyframe {
+	public class UserTransformKeyframe {
 		public Vector3 localPosition;
 		public Quaternion localRotation;
 		public List<UserTransformAction> actions;
@@ -86,6 +86,19 @@ namespace Assets {
 			for(int i = 0; i < actions.Count; i++) {
 				actions[i].PutToBinary(ref writer);
 			}
+		}
+
+		public UserTransformableGhost CreateGhost(UserTransformableRecordable target) {
+			GameObject ghostObject = GameObject.Instantiate(target).gameObject;
+
+			ghostObject.GetComponent<UserTransformableRecordable>().enabled = false;
+
+			if (ghostObject.GetComponent<UserTransformableGhost>() == null) ghostObject.AddComponent<UserTransformableGhost>();
+			UserTransformableGhost ghost = ghostObject.GetComponent<UserTransformableGhost>();
+			ghost.enabled = true;
+			ghost.BindKeyframe(this);
+
+			return ghost;
 		}
 	}
 }

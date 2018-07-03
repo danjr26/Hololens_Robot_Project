@@ -7,29 +7,36 @@ using UnityEngine;
 using System.IO;
 
 namespace Assets {
-	class UserTransformableRecording {
+	public class UserTransformableRecording {
 		public List<UserTransformKeyframe> keyframes { get; private set; }
 
 		public UserTransformableRecording() {
 			keyframes = new List<UserTransformKeyframe>();
 		}
 
-		public void AddKeyframe(Vector3 position, Quaternion rotation) {
+		public UserTransformKeyframe AddKeyframe(Vector3 position, Quaternion rotation) {
 			UserTransformKeyframe newKeyframe = new UserTransformKeyframe(position, rotation);
 			keyframes.Add(newKeyframe);
+			return newKeyframe;
 		}
 
-		public void AddKeyframe(Transform transform) {
+		public UserTransformKeyframe AddKeyframe(Transform transform) {
 			UserTransformKeyframe newKeyframe = new UserTransformKeyframe(transform);
 			keyframes.Add(newKeyframe);
+			return newKeyframe;
 		}
 
-		public void AddKeyframe(UserTransformKeyframe keyframe) {
+		public UserTransformKeyframe AddKeyframe(UserTransformKeyframe keyframe) {
 			keyframes.Add(keyframe);
+			return keyframe;
 		}
 
 		public void RemoveKeyframe(int index) {
 			keyframes.RemoveAt(index);
+		}
+
+		public void RemoveAllKeyframes() {
+			keyframes.Clear();
 		}
 
 		public async Task Execute(Transform frameOfReference) {

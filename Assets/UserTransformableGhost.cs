@@ -1,15 +1,27 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using Assets;
 public class UserTransformableGhost : UserTransformable {
 	Arrow arrowPrefab;
 	Arrow arrow = null;
 	UserTransformableGhost predecessor = null;
 	UserTransformableGhost successor = null;
+	UserTransformKeyframe keyframe = null;
 
 	private void Awake() {
 		arrowPrefab = Resources.Load<Arrow>("DefaultArrow");
+
+		MeshRenderer renderer = gameObject.GetComponent<MeshRenderer>();
+		if (renderer != null) {
+			Color color = renderer.material.color;
+			color.a = 0.4f;
+			renderer.material.color = color;
+		}
+	}
+
+	public void BindKeyframe(UserTransformKeyframe newKeyframe) {
+		keyframe = newKeyframe;
 	}
 
 	public void MakePredecessorTo(UserTransformableGhost newSuccessor) {
@@ -27,12 +39,21 @@ public class UserTransformableGhost : UserTransformable {
 		}
 	}
 
+	public void UpdateArrow() {
+		if (arrow != null) arrow.FromTo(predecessor.gameObject, gameObject);
+	}
+
+	public void UpdateBothArrows() {
+		UpdateArrow();
+		if (successor != null) successor.UpdateArrow();
+	}
+
 	protected override void BuildMenu() {
 		if (!isMenuOpen) return;
 		menu.GetComponent<ObjectMenu>().AddButton(
 			"Delete Snapshot",
 			delegate () {
-				UserTransformManager.instance.recorder.DeleteSnapshot(gameObject);
+				UserTransformManager.instance.recordEnvironment.DeleteSnapshot(gameObject);
 				isMenuOpen = false;
 			}
 		);
@@ -40,6 +61,14 @@ public class UserTransformableGhost : UserTransformable {
 
 	new protected void Update() {
 		base.Update();
-		if (HoloInputManager.instance.updateManipulationThisFrame) UserTransformManager.instance.recorder.UpdateArrowsConnectedTo(gameObject);
+		if (keyframe != null && 
+			UserTransformManager.instance.focusedObject == this &&  
+			HoloInputManager.instance.updateManipulationThisFrame) {
+
+			keyframe.GetFromTransform(gameObject.transform);
+
+			UpdateBothArrows();
+		}
+			
 	}
 }

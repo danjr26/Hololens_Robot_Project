@@ -10,12 +10,12 @@ public class UserTransformableRecordable : UserTransformable {
 	protected override void BuildMenu() {
 		if (!isMenuOpen) return;
 		if (UserTransformManager.instance.isRecording) {
-			if (UserTransformManager.instance.recorder.target == this) {
+			if (UserTransformManager.instance.recordEnvironment.target == this) {
 				// we are recording
 				menu.GetComponent<ObjectMenu>().AddButton(
 					"Take Snapshot",
 					delegate () {
-						UserTransformManager.instance.recorder.TakeSnapshot();
+						UserTransformManager.instance.recordEnvironment.CreateSnapshot(gameObject.transform);
 						isMenuOpen = false;
 					}
 				);
@@ -40,7 +40,7 @@ public class UserTransformableRecordable : UserTransformable {
 					"Switch Recording To This",
 					delegate () {
 						UserTransformManager.instance.StopRecording();
-						UserTransformManager.instance.StartRecording(this as UserTransformableRecordable);
+						UserTransformManager.instance.StartNewRecording(this as UserTransformableRecordable);
 						isMenuOpen = false;
 					}
 				);
@@ -51,7 +51,7 @@ public class UserTransformableRecordable : UserTransformable {
 			menu.GetComponent<ObjectMenu>().AddButton(
 				"Start Recording",
 				delegate () {
-					UserTransformManager.instance.StartRecording(this);
+					UserTransformManager.instance.StartNewRecording(this);
 					isMenuOpen = false;
 					isMenuOpen = true;
 				}
@@ -60,7 +60,7 @@ public class UserTransformableRecordable : UserTransformable {
 			menu.GetComponent<ObjectMenu>().AddButton(
 				"Load Recording",
 				delegate () {
-					UserTransformManager.instance.StartRecording(this);
+					UserTransformManager.instance.StartNewRecording(this);
 					UserTransformManager.instance.LoadRecording(gameObject);
 					isMenuOpen = false;
 				}

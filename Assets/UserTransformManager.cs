@@ -8,7 +8,7 @@ using System.IO;
 public class UserTransformManager : MonoBehaviour {
 	public static UserTransformManager instance;
 
-	public UserTransformRecordEnvironment recorder { get; private set; }
+	public UserTransformRecordEnvironment recordEnvironment { get; private set; }
 	public Arrow arrowPrefab;
 
 	private UserTransformable _focusedObject = null;
@@ -30,7 +30,7 @@ public class UserTransformManager : MonoBehaviour {
 
 	public bool isRecording {
 		get {
-			return recorder != null;
+			return recordEnvironment != null;
 		}
 	}
 
@@ -63,81 +63,23 @@ public class UserTransformManager : MonoBehaviour {
 	void Start () {
 		instance = this;
 		focusedObject = null;
-		recorder = null;
+		recordEnvironment = null;
 	}
 
-	public void StartRecording(UserTransformableRecordable target) {
-		recorder = new UserTransformRecordEnvironment(target);
+	public void StartNewRecording(UserTransformableRecordable target) {
+		recordEnvironment = new UserTransformRecordEnvironment(target);
+	}
+
+	public void LoadRecording(UserTransformableRecordable target, string filename) {
+		recordEnvironment = new UserTransformRecordEnvironment(target, filename);
+	}
+
+	public void SaveRecording(string filename) {
+		if(recordEnvironment != null) recordEnvironment.recording.Save(filename);
 	}
 
 	public void StopRecording() {
-		recorder.DeleteAllSnapshots();
-		recorder = null;
-	}
-
-	public void SaveRecording() {
-		try {
-			FileStream file = File.Create(Path.Combine(Application.persistentDataPath, "test.hrpsav"), 16 + 28 * recorder.keyframes.Count);
-
-			BinaryWriter writer = new BinaryWriter(file);
-			writer.Write((int)recorder.keyframes.Count);
-
-			for(int i = 0; i < recorder.keyframes.Count; i++) {
-				writer.Write((float)recorder.keyframes[i].transform.position.x);
-				writer.Write((float)recorder.keyframes[i].transform.position.y);
-				writer.Write((float)recorder.keyframes[i].transform.position.z);
-
-				writer.Write((float)recorder.keyframes[i].transform.rotation.x);
-				writer.Write((float)recorder.keyframes[i].transform.rotation.y);
-				writer.Write((float)recorder.keyframes[i].transform.rotation.z);
-				writer.Write((float)recorder.keyframes[i].transform.rotation.w);
-			}
-
-			writer.Write((uint)0xffffffff);
-
-			file.Flush();
-			
-		} catch (Exception e) {
-			OutputText.instance.text = e.Message + "\n" + e.StackTrace;
-		}
-	}
-
-	public void LoadRecording(GameObject objectToApply) {
-		try {
-			FileStream file = File.OpenRead(Path.Combine(Application.persistentDataPath, "test.hrpsav"));
-
-			file.Position = 0;
-
-			BinaryReader reader = new BinaryReader(file);
-			int n = reader.ReadInt32();
-
-			Vector3 position = new Vector3();
-			Quaternion rotation = new Quaternion();
-
-			for (int i = 0; i < n; i++) {
-				position.x = reader.ReadSingle();
-				position.y = reader.ReadSingle();
-				position.z = reader.ReadSingle();
-
-				rotation.x = reader.ReadSingle();
-				rotation.y = reader.ReadSingle();
-				rotation.z = reader.ReadSingle();
-				rotation.w = reader.ReadSingle();
-
-				objectToApply.transform.SetPositionAndRotation(position, rotation);
-
-				recorder.CreateSnapshot(objectToApply.transform);
-			}
-
-			if (reader.ReadUInt32() != 0xffffffff)
-				throw new Exception("Invalid save file");
-		}
-		catch (Exception e) {
-			OutputText.instance.text = OutputText.instance.text + "\n" + e.Message + "\n" + e.StackTrace;
-		}
-	}
-
-	public void RunRecording() {
-
+		recordEnvironment.DeleteAllSnapshots();
+		recordEnvironment = null;
 	}
 }
