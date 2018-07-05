@@ -21,7 +21,6 @@ public class GazeCursor : MonoBehaviour {
 	public Sprite moveSprite;
 	public Sprite rotateSprite;
 
-	public RaycastHit lastHit { get; private set; }
 	public GameObject onWhat { get; private set; }
 
 	public bool isVisible {
@@ -42,7 +41,6 @@ public class GazeCursor : MonoBehaviour {
 	}
 
 	void Update() {
-		int stepN = 0;
 		RaycastHit hit;
 		Camera camera = Camera.main;
 		SpriteRenderer renderer = gameObject.GetComponent<SpriteRenderer>();
@@ -52,58 +50,52 @@ public class GazeCursor : MonoBehaviour {
 		try {
 			switch (UserTransformManager.instance.transformMode) {
 				case UserTransformManager.TransformMode.none: {
-						stepN = 1;
 						activeSprite = pointerSprite;
 						if (Physics.Raycast(camera.transform.position, camera.transform.forward, out hit, 10.0f)) {
-							stepN = 2;
 							isVisible = true;
 							renderer.material.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
 							transform.position = hit.point;
 							transform.rotation = Quaternion.LookRotation(hit.normal);
 							onWhat = hit.collider.gameObject;
-							lastHit = hit;
-							stepN = 3;
 						}
 						else {
-							stepN = 4;
 							isVisible = false;
 							renderer.material.color = new Color(0.5f, 0.5f, 0.5f, 0.5f);
 							onWhat = null;
-							stepN = 5;
 						}
 					}
 					break;
 				case UserTransformManager.TransformMode.rotate:
 				case UserTransformManager.TransformMode.translate: {
-						if(UserTransformManager.instance.focusedObject == null) {
+						UserTransformable focusedObject = UserTransformManager.instance.focusedObject;
+
+						if(focusedObject == null) {
 							UserTransformManager.instance.transformMode = UserTransformManager.TransformMode.none;
 							return;
 						}
-						stepN = 6;
-						Physics.Raycast(
+
+						bool didHit = Physics.Raycast(
 							camera.transform.position,
-							UserTransformManager.instance.focusedObject.transform.position - camera.transform.position,
+							focusedObject.transform.position - camera.transform.position,
 							out hit, 10.0f
 						);
-						stepN = 7;
+						Vector3 point = (didHit) ? hit.point : focusedObject.transform.position;
 						isVisible = true;
 						renderer.material.color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
-						transform.position = hit.point;
-						transform.rotation = Quaternion.LookRotation(hit.normal);
-						onWhat = hit.collider.gameObject;
-						lastHit = hit;
-						stepN = 8;
+						transform.position = point + (Camera.main.transform.position - point).normalized * 0.01f;
+						transform.rotation = Camera.main.transform.rotation;
+
+						onWhat = (didHit) ? hit.collider.gameObject : null;
+
 						if (HoloInputManager.instance.isManipulating) {
 							gameObject.transform.localScale = new Vector3(0.006f, 0.006f, 0.006f);
 						}
 						else {
 							gameObject.transform.localScale = new Vector3(0.004f, 0.004f, 0.004f);
 						}
-						stepN = 9;
 						activeSprite =
 							(UserTransformManager.instance.transformMode == UserTransformManager.TransformMode.rotate) ?
 							rotateSprite : moveSprite;
-						stepN = 10;
 					}
 					break;
 				default:
@@ -111,7 +103,7 @@ public class GazeCursor : MonoBehaviour {
 					break;
 			}
 		} catch (Exception e) {
-			OutputText.instance.text = e.Message + " " + stepN.ToString() + "\n" + e.StackTrace;
+			OutputText.instance.text = e.Message + "\n" + e.StackTrace;
 		}
 	}
 }

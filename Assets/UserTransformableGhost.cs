@@ -10,12 +10,27 @@ public class UserTransformableGhost : UserTransformable {
 	UserTransformKeyframe keyframe = null;
 
 	private void Awake() {
-		arrowPrefab = Resources.Load<Arrow>("DefaultArrow");
+		arrowPrefab = (Resources.Load("DefaultArrow") as GameObject).GetComponent<Arrow>();
+	}
 
+	private void OnDestroy() {
+		if (arrow != null) Destroy(arrow.gameObject);
+	}
+
+	public void GhostifyRenderer() {
 		MeshRenderer renderer = gameObject.GetComponent<MeshRenderer>();
 		if (renderer != null) {
 			Color color = renderer.material.color;
 			color.a = 0.4f;
+			renderer.material.color = color;
+		}
+	}
+
+	public void DeghostifyRenderer() {
+		MeshRenderer renderer = gameObject.GetComponent<MeshRenderer>();
+		if (renderer != null) {
+			Color color = renderer.material.color;
+			color.a = 1.0f;
 			renderer.material.color = color;
 		}
 	}
@@ -34,7 +49,7 @@ public class UserTransformableGhost : UserTransformable {
 			if (arrow != null) Destroy(arrow);
 		}
 		else {
-			if (arrow != null) arrow = Instantiate(arrowPrefab);
+			if (arrow == null) arrow = Instantiate(arrowPrefab);
 			arrow.FromTo(newPredecessor.gameObject, gameObject);
 		}
 	}
@@ -69,6 +84,6 @@ public class UserTransformableGhost : UserTransformable {
 
 			UpdateBothArrows();
 		}
-			
+		
 	}
 }

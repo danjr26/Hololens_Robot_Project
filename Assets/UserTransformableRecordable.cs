@@ -16,6 +16,7 @@ public class UserTransformableRecordable : UserTransformable {
 					"Take Snapshot",
 					delegate () {
 						UserTransformManager.instance.recordEnvironment.CreateSnapshot(gameObject.transform);
+						gameObject.transform.Translate(Camera.main.transform.right * 0.01f);
 						isMenuOpen = false;
 					}
 				);
@@ -40,7 +41,7 @@ public class UserTransformableRecordable : UserTransformable {
 					"Switch Recording To This",
 					delegate () {
 						UserTransformManager.instance.StopRecording();
-						UserTransformManager.instance.StartNewRecording(this as UserTransformableRecordable);
+						UserTransformManager.instance.StartNewRecording(this);
 						isMenuOpen = false;
 					}
 				);
@@ -49,7 +50,7 @@ public class UserTransformableRecordable : UserTransformable {
 		else {
 			// nobody is recording
 			menu.GetComponent<ObjectMenu>().AddButton(
-				"Start Recording",
+				"New Recording",
 				delegate () {
 					UserTransformManager.instance.StartNewRecording(this);
 					isMenuOpen = false;
@@ -60,9 +61,12 @@ public class UserTransformableRecordable : UserTransformable {
 			menu.GetComponent<ObjectMenu>().AddButton(
 				"Load Recording",
 				delegate () {
-					UserTransformManager.instance.StartNewRecording(this);
-					UserTransformManager.instance.LoadRecording(this, "test.hrpsav");
-					isMenuOpen = false;
+					try {
+						UserTransformManager.instance.LoadRecording(this, "test.hrpsav");
+						isMenuOpen = false;
+					} catch(Exception e) {
+						OutputText.instance.text = e.Message + "\n" + e.StackTrace;
+					}
 				}
 			);
 		}

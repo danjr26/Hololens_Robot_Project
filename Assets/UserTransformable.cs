@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class UserTransformable : MenuOwner {
-	
+
+	private void Awake() {
+		gameObject.layer = LayerMask.NameToLayer("UserTransformable");
+	}
 
 	public bool isFocused {
 		get {

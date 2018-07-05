@@ -58,8 +58,8 @@ namespace Assets {
 
 				writer.Write((UInt32)0xffffffff);
 
+				writer.Flush();
 				file.Flush();
-
 			}
 			catch (Exception e) {
 				OutputText.instance.text = e.Message + "\n" + e.StackTrace;
@@ -71,8 +71,6 @@ namespace Assets {
 
 			try {
 				FileStream file = File.OpenRead(Path.Combine(Application.persistentDataPath, filename));
-
-				file.Position = 0;
 
 				BinaryReader reader = new BinaryReader(file);
 				int nKeyframes = reader.ReadInt32();

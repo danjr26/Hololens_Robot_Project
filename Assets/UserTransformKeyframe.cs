@@ -89,13 +89,14 @@ namespace Assets {
 		}
 
 		public UserTransformableGhost CreateGhost(UserTransformableRecordable target) {
-			GameObject ghostObject = GameObject.Instantiate(target).gameObject;
+			GameObject ghostObject = GameObject.Instantiate(target, localPosition, localRotation, target.transform.parent).gameObject;
 
 			ghostObject.GetComponent<UserTransformableRecordable>().enabled = false;
 
 			if (ghostObject.GetComponent<UserTransformableGhost>() == null) ghostObject.AddComponent<UserTransformableGhost>();
 			UserTransformableGhost ghost = ghostObject.GetComponent<UserTransformableGhost>();
 			ghost.enabled = true;
+			ghost.GhostifyRenderer();
 			ghost.BindKeyframe(this);
 
 			return ghost;

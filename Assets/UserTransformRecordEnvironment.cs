@@ -17,7 +17,8 @@ namespace Assets {
 		public UserTransformRecordEnvironment(UserTransformableRecordable target, string filename) {
 			this.target = target;
 			recording = UserTransformableRecording.Load(filename);
-			for(int i = 0; i < recording.keyframes.Count; i++) {
+			ghosts = new List<UserTransformableGhost>();
+			for (int i = 0; i < recording.keyframes.Count; i++) {
 				ghosts.Add(recording.keyframes[i].CreateGhost(target));
 				IncorporateGhost(i);
 			}
@@ -71,7 +72,7 @@ namespace Assets {
 		}
 
 		public void DeleteAllSnapshots() {
-			foreach(UserTransformableGhost ghost in ghosts) UnityEngine.Object.Destroy(ghost);
+			foreach(UserTransformableGhost ghost in ghosts) UnityEngine.Object.Destroy(ghost.gameObject);
 			ghosts.Clear();
 
 			recording.RemoveAllKeyframes();
