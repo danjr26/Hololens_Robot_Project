@@ -24,11 +24,31 @@ public class MainMenuManager : MenuOwner {
 				}
 			);*/
 
+
+		if (RobotInterface.instance.isConnected) {
+			menu.GetComponent<ObjectMenu>().AddButton(
+					"Disconnect From IP",
+					delegate () {
+						isMenuOpen = false;
+						RobotInterface.instance.EndConnection();
+					}
+				);
+		}
+		else {
+			menu.GetComponent<ObjectMenu>().AddButton(
+					"Connect Over IP",
+					delegate () {
+						isMenuOpen = false;
+						IpConfigurator.instance.Open();
+					}
+				);
+		}
+
 		menu.GetComponent<ObjectMenu>().AddButton(
 				"Calibrate",
 				delegate () {
-					CalibrationToken.instance.BeginCalibration();
 					isMenuOpen = false;
+					CalibrationToken.instance.BeginCalibration();
 				}
 			);
 		menu.GetComponent<ObjectMenu>().AddButton(

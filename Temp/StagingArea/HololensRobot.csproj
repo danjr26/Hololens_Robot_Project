@@ -152,7 +152,17 @@
     </SDKReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="App.cs">
+    <ApplicationDefinition Include="App.xaml">
+    </ApplicationDefinition>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+    </Compile>
+    <Page Include="MainPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="MainPage.xaml.cs">
+      <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Content Include="Resource.res">
     </Content>
@@ -170,6 +180,8 @@
     </Content>
     <Content Include="Assets\Wide310x150Logo.scale-200.png">
     </Content>
+    <Compile Include="Properties\AssemblyInfo.cs">
+    </Compile>
     <Content Include="Properties\Default.rd.xml">
     </Content>
     <Compile Include="UnityGenerated.cs">
@@ -349,8 +361,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="C:\Users\danie\Documents\Hololens_Robot_Project\Build\GeneratedProjects\UWP\Assembly-CSharp\Assembly-CSharp.csproj">
-      <Project>{b2e92628-914d-4173-92ca-7e37a83b2610}</Project>
+    <ProjectReference Include="C:\Users\danie\Documents\Hololens_Robot_Project\Build (XAML)\GeneratedProjects\UWP\Assembly-CSharp\Assembly-CSharp.csproj">
+      <Project>{380b4ded-e6a1-4d4b-9fb2-480e1d129f8e}</Project>
       <Name>Assembly-CSharp</Name>
       <Private>False</Private>
     </ProjectReference>

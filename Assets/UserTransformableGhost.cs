@@ -49,7 +49,7 @@ public class UserTransformableGhost : UserTransformable {
 			if (arrow != null) Destroy(arrow);
 		}
 		else {
-			if (arrow == null) arrow = Instantiate(arrowPrefab);
+			if (arrow == null) arrow = Instantiate(arrowPrefab, gameObject.transform.parent);
 			arrow.FromTo(newPredecessor.gameObject, gameObject);
 		}
 	}
@@ -68,8 +68,8 @@ public class UserTransformableGhost : UserTransformable {
 		menu.GetComponent<ObjectMenu>().AddButton(
 			"Delete Snapshot",
 			delegate () {
-				UserTransformManager.instance.recordEnvironment.DeleteSnapshot(gameObject);
 				isMenuOpen = false;
+				UserTransformManager.instance.recordEnvironment.DeleteSnapshot(gameObject);
 			}
 		);
 	}

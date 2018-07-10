@@ -78,8 +78,16 @@ public class UserTransformManager : MonoBehaviour {
 		if(recordEnvironment != null) recordEnvironment.recording.Save(filename);
 	}
 
+	public void RunRecording() {
+		if(recordEnvironment != null) {
+
+		}
+	}
+
 	public void StopRecording() {
-		recordEnvironment.DeleteAllSnapshots();
-		recordEnvironment = null;
+		if (recordEnvironment != null) {
+			recordEnvironment.DeleteAllSnapshots();
+			recordEnvironment = null;
+		}
 	}
 }

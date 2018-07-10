@@ -21,6 +21,12 @@ public class RobotInterface : MonoBehaviour {
 	public LoadData loadData = null;
 	public bool isConnected { get; private set; }
 
+	public Action onConnectSuccess = null;
+	public Action<string> onConnectFailure = null;
+	public Action onDisconnect = null;
+	public Action onCommandSendSuccess = null;
+	public Action<string> onCommandSendFailure = null;
+
 #if NETFX_CORE
 	StreamSocketListener socketListener;
 	StreamSocket outSocket;
@@ -34,24 +40,36 @@ public class RobotInterface : MonoBehaviour {
 
 	void Start() {
 		instance = this;
-		StartConnection();
 	}
 
 	private void Update() {
 		
 	}
 
-	private async Task StartConnection() {
+	public async Task StartConnection(string ip, string socketName) {
 #if NETFX_CORE
 		try {
+			if(isConnected) await EndConnection();
 			outSocket = new StreamSocket();
-			await outSocket.ConnectAsync(new HostName("192.168.100.61"), "9999");
+			await outSocket.ConnectAsync(new HostName(ip), socketName);
 			writer = new DataWriter(outSocket.OutputStream);
 			isConnected = true;
-			OutputText.instance.text = OutputText.instance.text + "\nConnection established.";
-
+			onConnectSuccess?.Invoke();
 		} catch (Exception e) {
-			OutputText.instance.text = OutputText.instance.text + "\nConnection failed: " + e.Message + "\n" + e.StackTrace;
+			onConnectFailure?.Invoke(e.Message);
+		}
+#endif
+	}
+
+	public async Task EndConnection() {
+#if NETFX_CORE
+		try {
+			isConnected = false;
+			await outSocket.CancelIOAsync();
+			outSocket.Dispose();
+			outSocket = null;
+		} catch (Exception e) {
+
 		}
 #endif
 	}
@@ -62,9 +80,9 @@ public class RobotInterface : MonoBehaviour {
 			writer.WriteString(command);
 			await writer.StoreAsync();
 			await writer.FlushAsync();
-			OutputText.instance.text = OutputText.instance.text + "\nCommand sent.";
+			onCommandSendSuccess?.Invoke();
 		} catch (Exception e) {
-			OutputText.instance.text = OutputText.instance.text + "\nCommand delivery failed: " + e.Message + "\n" + e.StackTrace;
+			onCommandSendFailure?.Invoke(e.Message);
 		}
 #endif
 	}

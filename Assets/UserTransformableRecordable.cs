@@ -21,6 +21,13 @@ public class UserTransformableRecordable : UserTransformable {
 					}
 				);
 				menu.GetComponent<ObjectMenu>().AddButton(
+					"Run Recording",
+					delegate () {
+						UserTransformManager.instance.recordEnvironment.recording.Execute(transform);
+						isMenuOpen = false;
+					}
+				);
+				menu.GetComponent<ObjectMenu>().AddButton(
 					"Stop Recording",
 					delegate () {
 						UserTransformManager.instance.StopRecording();

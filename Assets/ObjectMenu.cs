@@ -81,15 +81,16 @@ public class ObjectMenu : MonoBehaviour {
 
 		RaycastHit hit = new RaycastHit();
 		MeshCollider collider = objectToBind.GetComponent<MeshCollider>();
-		bool didHit = (collider == null) ? 
-			false : 
+		bool didHit = 
+			(collider == null) ? false : 
 			collider.Raycast(new Ray(camera.transform.position, objectToBind.transform.position - camera.transform.position), out hit, 10.0f);
 
 		Vector3 point = (didHit) ? hit.point : objectToBind.transform.position;
+
 		gameObject.transform.SetPositionAndRotation(
-			point + (camera.transform.position - point).normalized * 0.05f,
+			point + (camera.transform.position - point).normalized * 0.05f + new Vector3(0, 0.013f, 0),
 			Quaternion.LookRotation((point - camera.transform.position).normalized)
-			);
+		);
 	}
 
 	public void AddButton(string text, Action onClick) {

@@ -60,9 +60,10 @@ namespace Assets {
 
 				writer.Flush();
 				file.Flush();
+				OneButtonAlert.Create("Saved recording successfully.");
 			}
 			catch (Exception e) {
-				OutputText.instance.text = e.Message + "\n" + e.StackTrace;
+				OneButtonAlert.Create("Failed to save recording.");
 			}
 		}
 
@@ -81,9 +82,11 @@ namespace Assets {
 
 				if (reader.ReadUInt32() != 0xffffffff)
 					throw new Exception("Invalid save file");
+
+				OneButtonAlert.Create("Loaded recording successfully.");
 			}
 			catch (Exception e) {
-				OutputText.instance.text = OutputText.instance.text + "\n" + e.Message + "\n" + e.StackTrace;
+				OneButtonAlert.Create("Failed to load saved recording.");
 			}
 
 			return newRecording;

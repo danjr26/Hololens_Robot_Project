@@ -1,6 +1,6 @@
 Metro
 PlayerPath?
-C:/Users/danie/Documents/Hololens_Robot_Project/Build
+C:/Users/danie/Documents/Hololens_Robot_Project/Build (XAML)
 SceneListBegin?
 Assets/Scenes/SampleScene.unity
 SceneListEnd?
@@ -85,6 +85,7 @@ f61c0793411f10cf5fbfa1473fef5ef2 UnityEngine.UI.dll:UnityEngine.UI.ToggleGroup
 86d36c43c53541d667100dc90b89cfba UnityEngine.UI.dll:UnityEngine.EventSystems.TouchInputModule
 1b8c02d0aa82fbf036a2b9b2d713eec3 UnityEngine.UI.dll:UnityEngine.UI.VerticalLayoutGroup
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.OutputText
+05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.TwoButtonAlert
 f90c5547da4a6bf78c9f01d423c35266 Assembly-CSharp.dll:.CameraFollowScript
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.ButtonPressScript
 05524b8f659e7bfe5756d1335fec24ba UnityEngine.Timeline.dll:UnityEngine.Timeline.ActivationPlayableAsset
@@ -124,6 +125,7 @@ c2275a8bfbb9f9942cad75ecdfded41d UnityEngine.HoloLens.dll:UnityEngine.XR.WSA.Spa
 45f3431f0103c41611e8d4eec3d439df UnityEngine.HoloLens.dll:UnityEngine.XR.WSA.SpatialMappingRenderer
 f90c5547da4a6bf78c9f01d423c35266 Assembly-CSharp.dll:.LightScript
 65f5007ab13a67892b12c85d0def057f Assembly-CSharp.dll:.UserTransformableGhost
+05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.Numpad
 abe3053918e59c28381bb7d4b5a004b8 Assembly-CSharp.dll:.UserTransformableAnchor
 fc1e0f4d8439d9928083474691511a13 UnityEngine.Networking.dll:UnityEngine.Networking.NetworkAnimator
 05524b8f659e7bfe5756d1335fec24ba UnityEngine.Networking.dll:UnityEngine.Networking.NetworkBehaviour
@@ -139,7 +141,9 @@ e9bdabf9265d758d56f01bb188916fa8 UnityEngine.Networking.dll:UnityEngine.Networki
 3f32f08a64daf40b09ed864d96fe3840 UnityEngine.Networking.dll:UnityEngine.Networking.NetworkTransform
 73843688b51256aed059f049c540bca8 UnityEngine.Networking.dll:UnityEngine.Networking.NetworkTransformChild
 528ea1fd7c01796fc60c4e2f172ea229 UnityEngine.Networking.dll:UnityEngine.Networking.NetworkTransformVisualizer
+40181d6d11dcdabc1d73b433ddeac1c4 Assembly-CSharp.dll:.IpConfigButton
 4d55318eb89b16d5f76b201c20786ccd Assembly-CSharp.dll:.MenuOwner
+05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.IpConfigurator
 fc1e0f4d8439d9928083474691511a13 UnityEngine.Networking.dll:UnityEngine.Networking.NetworkAnimator
 05524b8f659e7bfe5756d1335fec24ba UnityEngine.Networking.dll:UnityEngine.Networking.NetworkBehaviour
 60b2bb652410a5867a5ab9a01cd38461 UnityEngine.Networking.dll:UnityEngine.Networking.NetworkDiscovery
@@ -178,7 +182,10 @@ c2275a8bfbb9f9942cad75ecdfded41d UnityEngine.HoloLens.dll:UnityEngine.XR.WSA.Spa
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.HoloInputManager
 9de3a22eca9aefadba2d10d5987cefe3 UnityEngine.SpatialTracking.dll:UnityEngine.SpatialTracking.TrackedPoseDriver
 8b90b6d7055f20fee7226513cecf8984 Assembly-CSharp.dll:.GazeCursor
+3aceed4c2a878381ad7c58aa4501898e Assembly-CSharp.dll:.KeyboardKey
 8b60d46d418dfdfd6a8461921f5c583d Assembly-CSharp.dll:.MenuButton
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.ExistenceChecker
 65f5007ab13a67892b12c85d0def057f Assembly-CSharp.dll:.UserTransformableRecordable
+05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.OneButtonAlert
 aeccb0209693623450b4a7310fe95c1a Assembly-CSharp.dll:.AnchorManager
+05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.NoButtonAlert

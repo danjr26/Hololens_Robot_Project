@@ -40,7 +40,6 @@ GameObject:
   - component: {fileID: 224969043828573170}
   - component: {fileID: 222860657239715476}
   - component: {fileID: 114521975480720876}
-  - component: {fileID: 65021831625603130}
   - component: {fileID: 114970820268383258}
   m_Layer: 10
   m_Name: ButtonText
@@ -49,18 +48,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!65 &65021831625603130
-BoxCollider:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1213847787360950}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 0
-  serializedVersion: 2
-  m_Size: {x: 0.225, y: 0.03, z: 0.01}
-  m_Center: {x: 0, y: 0, z: -0.005}
 --- !u!65 &65699690749560824
 BoxCollider:
   m_ObjectHideFlags: 1

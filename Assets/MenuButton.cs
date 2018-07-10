@@ -41,9 +41,9 @@ public class MenuButton : MonoBehaviour {
 		}
 	}
 
-	public Action onClick;
+	public Action onClick = null;
 
-	private bool _isClicking;
+	private bool _isClicking = false;
 	public bool isClicking {
 		get {
 			return _isClicking;
@@ -51,13 +51,13 @@ public class MenuButton : MonoBehaviour {
 		private set {
 			if(!_isClicking && value) {
 				StartCoroutine("FadeFromClick");
-				onClick();
+				if(onClick != null) onClick();
 			}
 			_isClicking = value;
 		}
 	}
 
-	private bool _isHovering;
+	private bool _isHovering = false;
 	public bool isHovering {
 		get {
 			return _isHovering;
@@ -72,12 +72,9 @@ public class MenuButton : MonoBehaviour {
 		}
 	}
 
-	void Start () {
+	void Awake () {
 		buttonColor = normalButtonColor;
 		textColor = normalTextColor;
-
-		_isClicking = false;
-		_isHovering = false;
 	}
 	
 	void Update () {
@@ -109,8 +106,8 @@ public class MenuButton : MonoBehaviour {
 
 	IEnumerator FadeFromClick() {
 		for (float t = 0.0f; t < clickFadeTime; t += Time.deltaTime) {
-			buttonColor = Color.Lerp(clickButtonColor, normalButtonColor, t / highlightFadeTime);
-			textColor = Color.Lerp(clickTextColor, normalTextColor, t / highlightFadeTime);
+			buttonColor = Color.Lerp(clickButtonColor, normalButtonColor, t / clickFadeTime);
+			textColor = Color.Lerp(clickTextColor, normalTextColor, t / clickFadeTime);
 			yield return null;
 		}
 	}
