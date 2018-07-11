@@ -50,25 +50,23 @@ public class ObjectMenu : MonoBehaviour {
 
 	void Awake() {
 		buttons = new List<GameObject>();
-	}
-
-	void Start () {
 		boundObject = null;
 		panel = transform.Find("Panel").gameObject;
-		/*
-		AddButton(
-			"Blah Blah",
-			delegate () {
-				UserTransformManager.instance.StartRecording(boundObject.GetComponent<UserTransformableObject>());
-			}
-		);*/
 	}
 	
 	void Update () {
-		if (!gameObject.activeSelf) {
-			if(boundObject == null) {
+		RaycastHit hit;
+		Collider collider = gameObject.GetComponent<Collider>();
+		Camera camera = Camera.main;
+		Ray ray = new Ray(camera.transform.position, camera.transform.forward);
+
+		if ((HoloInputManager.instance.clickThisFrame || HoloInputManager.instance.startHoldThisFrame) &&
+			!gameObject.GetComponent<Collider>().Raycast(ray, out hit, 10.0f)) {
+
+			if (boundObject == null) {
 				Destroy(this);
-			} else {
+			}
+			else {
 				boundObject.GetComponent<MenuOwner>().isMenuOpen = false;
 			}
 		}

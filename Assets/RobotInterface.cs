@@ -17,8 +17,8 @@ using System.Threading.Tasks;
 
 public class RobotInterface : MonoBehaviour {
 	public static RobotInterface instance;
-	public ToolData toolData = null;
-	public LoadData loadData = null;
+	//public ToolData toolData = null;
+	//public LoadData loadData = null;
 	public bool isConnected { get; private set; }
 
 	public Action onConnectSuccess = null;
@@ -88,10 +88,41 @@ public class RobotInterface : MonoBehaviour {
 	}
 
 	public async Task Move(MoveCommand command) {
-		//OutputText.instance.text = command.ToRAPID();
-		await SendCommand(command.ToRAPID());
+		await SendCommand(command.ToURCommand());
 	}
 
+	public class MoveCommand {
+		public bool ensureLinearity = false;
+		public Vector3 position;
+		public Quaternion rotation;
+		public float velocity = 0.5f;
+		public float acceleration = 0.5f;
+
+		public MoveCommand(Vector3 endpoint, Quaternion orientation) {
+			position = endpoint * 1000.0f; // meters to mm;
+			rotation = orientation;
+		}
+
+		public string ToURCommand() {
+			Vector3 eulerAngles = rotation.eulerAngles * Mathf.Deg2Rad;
+			return
+				(ensureLinearity) ? "movel" : "movej" 
+				+ "("
+					+ "p[" 
+						+ position.x.ToString("F3") + ", "
+						+ position.y.ToString("F3") + ", "
+						+ position.z.ToString("F3") + ", "
+						+ eulerAngles.x.ToString("F3") + ", "
+						+ eulerAngles.y.ToString("F3") + ", "
+						+ eulerAngles.z.ToString("F3")
+					+ "]"
+					+ "v=" + velocity.ToString("F3")
+					+ "a=" + acceleration.ToString("F3")
+				+ ")";
+		}
+	}
+
+	/*
 	public class MoveCommand {
 		public bool ensureLinearity = false;
 		public TargetPoseData targetPoseData = new TargetPoseData();
@@ -264,5 +295,5 @@ public class RobotInterface : MonoBehaviour {
 			q.y.ToString("F6") + ", " +
 			q.z.ToString("F6") + 
 			"]";
-	}
+	}*/
 }

@@ -362,7 +362,7 @@
 
   <ItemGroup>
     <ProjectReference Include="C:\Users\danie\Documents\Hololens_Robot_Project\Build (XAML)\GeneratedProjects\UWP\Assembly-CSharp\Assembly-CSharp.csproj">
-      <Project>{380b4ded-e6a1-4d4b-9fb2-480e1d129f8e}</Project>
+      <Project>{228b59f2-67f3-4557-9e37-ddaef3a98242}</Project>
       <Name>Assembly-CSharp</Name>
       <Private>False</Private>
     </ProjectReference>

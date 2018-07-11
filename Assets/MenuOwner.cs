@@ -19,7 +19,8 @@ public class MenuOwner : MonoBehaviour {
 					menu.GetComponent<ObjectMenu>().Bind(gameObject);
 					BuildMenu();
 				} catch (Exception e) {
-					RobotInterface.instance.SendCommand(e.Message + "\n" + e.StackTrace);
+					OutputText.instance.text = OutputText.instance.text + e.Message + "\n" + e.StackTrace;
+					//RobotInterface.instance.SendCommand(e.Message + "\n" + e.StackTrace);
 				}
 			}
 			else if (isMenuOpen) {

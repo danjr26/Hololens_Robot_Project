@@ -5,11 +5,17 @@ using UnityEngine.XR.WSA;
 
 public class MainMenuManager : MenuOwner {
 	void Update () {
-		if(HoloInputManager.instance.startHoldThisFrame &&
+		if(HoloInputManager.instance.startHoldThisFrame) {
+			OutputText.instance.text = OutputText.instance.text + "\n" + UserTransformManager.instance.transformMode.ToString() + " / " + (GazeCursor.instance.onWhat)?.ToString() + " / " + isMenuOpen.ToString();
+		}
+
+		if (HoloInputManager.instance.startHoldThisFrame &&
 			UserTransformManager.instance.transformMode == UserTransformManager.TransformMode.none && 
 			GazeCursor.instance.onWhat == null && !isMenuOpen) {
 
-			gameObject.transform.position = Camera.main.transform.position + Camera.main.transform.forward * 0.5f;
+			OutputText.instance.text = OutputText.instance.text + "\nMain Menu opened";
+
+			gameObject.transform.position = Camera.main.transform.position + Camera.main.transform.forward * 0.4f;
 			isMenuOpen = true;
 		}
 	}

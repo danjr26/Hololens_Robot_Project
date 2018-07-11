@@ -83,14 +83,19 @@ public class CalibrationToken : UserTransformable {
 		}
 	}
 
+	public void CancelCalibration() {
+		gameObject.GetComponent<MeshRenderer>().enabled = false;
+		gameObject.GetComponent<MeshCollider>().enabled = false;
+	}
+
 	protected override void BuildMenu() {
 		if (!isMenuOpen) return;
 		menu.GetComponent<ObjectMenu>().AddButton(
 				"Confirm",
 				delegate () {
 					try {
-						ConfirmPoint();
 						isMenuOpen = false;
+						ConfirmPoint();
 					} catch (Exception e) {
 						OutputText.instance.text = e.Message + "\n" + e.StackTrace;
 					}
@@ -98,9 +103,9 @@ public class CalibrationToken : UserTransformable {
 			);
 		menu.GetComponent<ObjectMenu>().AddButton(
 				"Cancel",
-				delegate () {
-					UserTransformManager.instance.transformMode = UserTransformManager.TransformMode.translate;
+				delegate () {					
 					isMenuOpen = false;
+					CancelCalibration();
 				}
 			);
 	}

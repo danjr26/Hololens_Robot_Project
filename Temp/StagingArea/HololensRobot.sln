@@ -1,12 +1,12 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.7.27703.2035
+VisualStudioVersion = 15.7.27703.2042
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HololensRobot", "HololensRobot\HololensRobot.csproj", "{13A45C13-3265-47B8-BC48-A553B569DF55}"
-		{380b4ded-e6a1-4d4b-9fb2-480e1d129f8e} = {380b4ded-e6a1-4d4b-9fb2-480e1d129f8e}
+		{228b59f2-67f3-4557-9e37-ddaef3a98242} = {228b59f2-67f3-4557-9e37-ddaef3a98242}
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "C:\Users\danie\Documents\Hololens_Robot_Project\Build (XAML)\GeneratedProjects\UWP\Assembly-CSharp\Assembly-CSharp.csproj", "{380b4ded-e6a1-4d4b-9fb2-480e1d129f8e}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "C:\Users\danie\Documents\Hololens_Robot_Project\Build (XAML)\GeneratedProjects\UWP\Assembly-CSharp\Assembly-CSharp.csproj", "{228b59f2-67f3-4557-9e37-ddaef3a98242}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -48,24 +48,24 @@ Global
 		{13A45C13-3265-47B8-BC48-A553B569DF55}.Release|x86.ActiveCfg = Release|x86
 		{13A45C13-3265-47B8-BC48-A553B569DF55}.Release|x86.Build.0 = Release|x86
 		{13A45C13-3265-47B8-BC48-A553B569DF55}.Release|x86.Deploy.0 = Release|x86
-		{380b4ded-e6a1-4d4b-9fb2-480e1d129f8e}.Debug|x86.ActiveCfg = Debug|x86
-		{380b4ded-e6a1-4d4b-9fb2-480e1d129f8e}.Debug|x86.Build.0 = Debug|x86
-		{380b4ded-e6a1-4d4b-9fb2-480e1d129f8e}.Release|x86.ActiveCfg = Release|x86
-		{380b4ded-e6a1-4d4b-9fb2-480e1d129f8e}.Release|x86.Build.0 = Release|x86
-		{380b4ded-e6a1-4d4b-9fb2-480e1d129f8e}.Master|x86.ActiveCfg = Master|x86
-		{380b4ded-e6a1-4d4b-9fb2-480e1d129f8e}.Master|x86.Build.0 = Master|x86
-		{380b4ded-e6a1-4d4b-9fb2-480e1d129f8e}.Debug|x64.ActiveCfg = Debug|x64
-		{380b4ded-e6a1-4d4b-9fb2-480e1d129f8e}.Debug|x64.Build.0 = Debug|x64
-		{380b4ded-e6a1-4d4b-9fb2-480e1d129f8e}.Release|x64.ActiveCfg = Release|x64
-		{380b4ded-e6a1-4d4b-9fb2-480e1d129f8e}.Release|x64.Build.0 = Release|x64
-		{380b4ded-e6a1-4d4b-9fb2-480e1d129f8e}.Master|x64.ActiveCfg = Master|x64
-		{380b4ded-e6a1-4d4b-9fb2-480e1d129f8e}.Master|x64.Build.0 = Master|x64
-		{380b4ded-e6a1-4d4b-9fb2-480e1d129f8e}.Debug|ARM.ActiveCfg = Debug|ARM
-		{380b4ded-e6a1-4d4b-9fb2-480e1d129f8e}.Debug|ARM.Build.0 = Debug|ARM
-		{380b4ded-e6a1-4d4b-9fb2-480e1d129f8e}.Release|ARM.ActiveCfg = Release|ARM
-		{380b4ded-e6a1-4d4b-9fb2-480e1d129f8e}.Release|ARM.Build.0 = Release|ARM
-		{380b4ded-e6a1-4d4b-9fb2-480e1d129f8e}.Master|ARM.ActiveCfg = Master|ARM
-		{380b4ded-e6a1-4d4b-9fb2-480e1d129f8e}.Master|ARM.Build.0 = Master|ARM
+		{228b59f2-67f3-4557-9e37-ddaef3a98242}.Debug|x86.ActiveCfg = Debug|x86
+		{228b59f2-67f3-4557-9e37-ddaef3a98242}.Debug|x86.Build.0 = Debug|x86
+		{228b59f2-67f3-4557-9e37-ddaef3a98242}.Release|x86.ActiveCfg = Release|x86
+		{228b59f2-67f3-4557-9e37-ddaef3a98242}.Release|x86.Build.0 = Release|x86
+		{228b59f2-67f3-4557-9e37-ddaef3a98242}.Master|x86.ActiveCfg = Master|x86
+		{228b59f2-67f3-4557-9e37-ddaef3a98242}.Master|x86.Build.0 = Master|x86
+		{228b59f2-67f3-4557-9e37-ddaef3a98242}.Debug|x64.ActiveCfg = Debug|x64
+		{228b59f2-67f3-4557-9e37-ddaef3a98242}.Debug|x64.Build.0 = Debug|x64
+		{228b59f2-67f3-4557-9e37-ddaef3a98242}.Release|x64.ActiveCfg = Release|x64
+		{228b59f2-67f3-4557-9e37-ddaef3a98242}.Release|x64.Build.0 = Release|x64
+		{228b59f2-67f3-4557-9e37-ddaef3a98242}.Master|x64.ActiveCfg = Master|x64
+		{228b59f2-67f3-4557-9e37-ddaef3a98242}.Master|x64.Build.0 = Master|x64
+		{228b59f2-67f3-4557-9e37-ddaef3a98242}.Debug|ARM.ActiveCfg = Debug|ARM
+		{228b59f2-67f3-4557-9e37-ddaef3a98242}.Debug|ARM.Build.0 = Debug|ARM
+		{228b59f2-67f3-4557-9e37-ddaef3a98242}.Release|ARM.ActiveCfg = Release|ARM
+		{228b59f2-67f3-4557-9e37-ddaef3a98242}.Release|ARM.Build.0 = Release|ARM
+		{228b59f2-67f3-4557-9e37-ddaef3a98242}.Master|ARM.ActiveCfg = Master|ARM
+		{228b59f2-67f3-4557-9e37-ddaef3a98242}.Master|ARM.Build.0 = Master|ARM
  EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

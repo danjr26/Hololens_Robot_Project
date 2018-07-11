@@ -31,10 +31,11 @@ public class IpConfigurator : MonoBehaviour {
 		offset = offset.normalized * 0.5f;
 
 		gameObject.transform.position = Camera.main.transform.position + offset;
-		gameObject.transform.rotation = Quaternion.LookRotation(offset - Camera.main.transform.position, new Vector3(0, 1, 0));
+		gameObject.transform.rotation = Quaternion.LookRotation(offset, new Vector3(0, 1, 0));
 	}
 
 	public void Close() {
+		ReleaseNumpad();
 		gameObject.SetActive(false);
 	}
 
@@ -48,6 +49,9 @@ public class IpConfigurator : MonoBehaviour {
 
 			writer.Flush();
 			file.Flush();
+
+			writer.Dispose();
+			file.Dispose();
 		}
 		catch (Exception e) {
 			OutputText.instance.text = e.Message + "\n" + e.StackTrace;
@@ -64,9 +68,13 @@ public class IpConfigurator : MonoBehaviour {
 
 			for (uint i = 0; i < 4; i++) SetIpString(i, reader.ReadByte().ToString());
 			SetSocketString(reader.ReadUInt16().ToString());
+
+			reader.Dispose();
+			file.Dispose();
 		}
-		catch (Exception e) 
-		{}
+		catch (Exception e) {
+			OutputText.instance.text = e.Message + "\n" + e.StackTrace;
+		}
 	}
 
 	public void RequestNumpad(IpConfigButton button) {
@@ -81,6 +89,7 @@ public class IpConfigurator : MonoBehaviour {
 
 	public void ReleaseNumpad() {
 		if (numpad != null) Destroy(numpad);
+		numpad = null;
 		activeButton = null;
 	}
 
@@ -94,7 +103,7 @@ public class IpConfigurator : MonoBehaviour {
 	}
 
 	public void SetIpString(uint n, string ipString) {
-		gameObject.transform.Find("IPConfigByte" + n.ToString()).GetComponent<IpConfigButton>().text = ipString;
+		gameObject.transform.Find("IPConfigByte" +(n + 1).ToString()).GetComponent<IpConfigButton>().text = ipString;
 	}
 
 	public string GetSocketString() {
@@ -108,6 +117,8 @@ public class IpConfigurator : MonoBehaviour {
 	public async Task TryConnect() {
 		RobotInterface.instance.onConnectSuccess = onConnectSuccess;
 		RobotInterface.instance.onConnectFailure = onConnectFailure;
+
+		ReleaseNumpad();
 
 		try {
 			GameObject alert = NoButtonAlert.Create("Trying to connect to " + GetIpString() + ":" + GetSocketString() + " ...");

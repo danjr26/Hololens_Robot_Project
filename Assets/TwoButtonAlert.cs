@@ -32,7 +32,7 @@ public class TwoButtonAlert : MonoBehaviour {
 		GameObject alert = Instantiate(
 			Resources.Load<GameObject>("DefaultTwoButtonAlert"),
 			Camera.main.transform.position + offset,
-			Quaternion.LookRotation(offset - Camera.main.transform.position, new Vector3(0, 1, 0))
+			Quaternion.LookRotation(offset, new Vector3(0, 1, 0))
 		);
 
 		alert.GetComponent<TwoButtonAlert>().text = text;
