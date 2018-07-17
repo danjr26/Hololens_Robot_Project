@@ -14,12 +14,17 @@ using System.Threading;
 using System.Threading.Tasks;
 #endif
 
-
 public class RobotInterface : MonoBehaviour {
 	public static RobotInterface instance;
 	//public ToolData toolData = null;
 	//public LoadData loadData = null;
-	public bool isConnected { get; private set; }
+	public bool isConnectedToCommand { get; private set; }
+	public bool isConnectedToRegister { get; private set; }
+
+	const uint fetchBufferMaxLength = 1024;
+	uint fetchBufferLength = 0;
+	private byte[] fetchBuffer = new byte[fetchBufferMaxLength];
+	bool isFetching = false;
 
 	public Action onConnectSuccess = null;
 	public Action<string> onConnectFailure = null;
@@ -28,46 +33,76 @@ public class RobotInterface : MonoBehaviour {
 	public Action<string> onCommandSendFailure = null;
 
 #if NETFX_CORE
-	StreamSocketListener socketListener;
-	StreamSocket outSocket;
-	DataWriter writer;
+	StreamSocket commandSocket;
+	StreamSocket registerSocket;
+	DataReader commandReader;
+	DataWriter commandWriter;
+	DataReader registerReader;
+	DataWriter registerWriter;
 #endif
 
 	void Awake() {
 		instance = this;
-		isConnected = false;
+		isConnectedToCommand = false;
 	}
 
 	void Start() {
 		instance = this;
 	}
 
-	private void Update() {
-		
-	}
-
 	public async Task StartConnection(string ip, string socketName) {
 #if NETFX_CORE
 		try {
-			if(isConnected) await EndConnection();
-			outSocket = new StreamSocket();
-			await outSocket.ConnectAsync(new HostName(ip), socketName);
-			writer = new DataWriter(outSocket.OutputStream);
-			isConnected = true;
-			onConnectSuccess?.Invoke();
+			if(isConnectedToCommand || isConnectedToRegister) await EndConnection();
+			
+			commandSocket = new StreamSocket();
+			await commandSocket.ConnectAsync(new HostName(ip), socketName);
+			commandWriter = new DataWriter(commandSocket.OutputStream);
+			commandReader = new DataReader(commandSocket.InputStream);
+
+			isConnectedToCommand = true;
+
 		} catch (Exception e) {
-			onConnectFailure?.Invoke(e.Message);
+			onConnectFailure?.Invoke(
+				"Fatal connection failure. Ensure the robot is turned on and connected to the same network as the HoloLens."
+			);
 		}
+		
+		if(isConnectedToCommand) {
+			try {
+				registerSocket = new StreamSocket();
+				await registerSocket.ConnectAsync(new HostName(ip), "502");
+				registerReader = new DataReader(registerSocket.InputStream);
+				registerWriter = new DataWriter(registerSocket.OutputStream);
+
+				isConnectedToRegister = true;
+			} catch (Exception e) {
+				onConnectFailure?.Invoke(
+					"Partial connection failure. Commands can be sent, but feedback from the robot cannot be read. Operation under these conditions may result in undefined behavior."
+				);
+			}
+		}
+		
+
+		//isConnectedToRegister = true;
+
+		if(isConnectedToCommand && isConnectedToRegister) onConnectSuccess?.Invoke();
 #endif
 	}
 
 	public async Task EndConnection() {
 #if NETFX_CORE
 		try {
-			isConnected = false;
-			await outSocket.CancelIOAsync();
-			outSocket.Dispose();
-			outSocket = null;
+			isConnectedToCommand = false;
+			await commandSocket.CancelIOAsync();
+			commandSocket.Dispose();
+			commandSocket = null;
+
+			isConnectedToRegister = true;
+			await registerSocket.CancelIOAsync();
+			registerSocket.Dispose();
+			registerSocket = null;
+
 		} catch (Exception e) {
 
 		}
@@ -76,13 +111,62 @@ public class RobotInterface : MonoBehaviour {
 
 	public async Task SendCommand(string command) {
 #if NETFX_CORE
-		try {
-			writer.WriteString(command);
-			await writer.StoreAsync();
-			await writer.FlushAsync();
-			onCommandSendSuccess?.Invoke();
-		} catch (Exception e) {
-			onCommandSendFailure?.Invoke(e.Message);
+		if(isConnectedToCommand) {
+			try {
+				commandWriter.WriteString(command);
+
+				await commandWriter.StoreAsync();
+				await commandWriter.FlushAsync();
+
+				onCommandSendSuccess?.Invoke();
+
+			} catch (Exception e) {
+				onCommandSendFailure?.Invoke(e.Message);
+			}
+		}
+#endif
+	}
+
+	public async Task SendRequest(byte[] request) {
+#if NETFX_CORE
+		if(isConnectedToRegister) {
+			try {
+				registerWriter.WriteBytes(request);
+
+				await registerWriter.StoreAsync();
+				await registerWriter.FlushAsync();
+				
+			} catch (Exception e) {
+				OutputText.instance.text = OutputText.instance.text + e.Message + "\n" + e.StackTrace;
+			}
+		}
+#endif
+	} 
+
+	public async Task RecieveRequestResponse() {
+#if NETFX_CORE
+		if(isConnectedToRegister) {
+			try {
+				await registerReader.LoadAsync(6);
+				if(registerReader.ReadUInt16() != 4 || registerReader.ReadUInt16() != 0) {
+					throw new InvalidDataException("Invalid request response.");
+				}		
+
+				ushort nBytes = (ushort)(registerReader.ReadUInt16());
+				await registerReader.LoadAsync(nBytes);
+
+				registerReader.ReadByte();
+				nBytes--;
+
+				for(ushort i = 0; i < nBytes; i++) {
+					fetchBuffer[i] = registerReader.ReadByte();
+				}
+
+				fetchBufferLength = nBytes;
+				
+			} catch (Exception e) {
+				OutputText.instance.text = OutputText.instance.text + e.Message + "\n" + e.StackTrace;
+			}
 		}
 #endif
 	}
@@ -91,16 +175,82 @@ public class RobotInterface : MonoBehaviour {
 		await SendCommand(command.ToURCommand());
 	}
 
+	public async Task FetchRealPose() {
+		byte[] fetchRequest = {
+			0x00, 0x04,
+			0x00, 0x00,
+			0x00, 0x06,
+			0x00,
+			0x03,
+			0x01, 0x90,
+			0x00, 0x06
+		};
+		/*
+		string fetchRequest =
+			  "\x00\x04"    // transaction pairing header
+			+ "\x00\x00"    // MODBUS protocol identifier
+			+ "\x00\x06"    // 6 more bytes
+			+ "\x00"        // unit identifier
+			+ "\x03"        // MODBUS request type (read holding registers)
+			+ "\x01\x90"    // register starting address (400)
+			+ "\x00\x06";   // 6 registers
+			*/
+		while (isFetching) ;
+		isFetching = true;
+		await SendRequest(fetchRequest);
+		await RecieveRequestResponse();
+		isFetching = false;
+	}
+
+	public bool GetFetchedRealPose(out Vector3 position, out Quaternion rotation) {
+		if(fetchBufferLength == 0) {
+			position = new Vector3();
+			rotation = Quaternion.identity;
+			return false;
+		} else {
+			if (fetchBufferLength != 2 + 12 || fetchBuffer[0] != 0x03 || fetchBuffer[1] != 12) {
+				throw new InvalidDataException("Invalid MODBUS response. Dump: " +  fetchBufferLength.ToString() + " " + fetchBuffer[0].ToString() + " " + fetchBuffer[1].ToString());
+			}
+
+			short[] registerData = new short[6];
+			for(uint i = 0; i < 6; i++) {
+				registerData[i] = (short)((fetchBuffer[2 + i * 2] << 8) | fetchBuffer[2 + i * 2 + 1]);
+			}
+
+			// tenth of millimeter to meter
+			position = new Vector3(
+				registerData[0],
+				registerData[1],
+				registerData[2]
+			) / 10000.0f;
+
+			// milliradian to degree
+			Vector3 eulerAngles = new Vector3(
+				registerData[3],
+				registerData[4],
+				registerData[5]
+			) / 1000.0f * Mathf.Rad2Deg;
+
+			rotation = Quaternion.Euler(eulerAngles);
+
+			fetchBufferLength = 0;
+
+			return true;
+		}
+	}
+
 	public class MoveCommand {
 		public bool ensureLinearity = false;
 		public Vector3 position;
 		public Quaternion rotation;
-		public float velocity = 0.5f;
-		public float acceleration = 0.5f;
+		public float velocity = 0.3f;
+		public float acceleration = 0.3f;
 
 		public MoveCommand(Vector3 endpoint, Quaternion orientation) {
-			position = endpoint * 1000.0f; // meters to mm;
-			rotation = orientation;
+			Quaternion frameFixer = Quaternion.Euler(90, 0, 0);
+			position = frameFixer * endpoint;
+			rotation = orientation * frameFixer;
+			OutputText.instance.text = OutputText.instance.text + "\n" + ToURCommand();
 		}
 
 		public string ToURCommand() {
@@ -109,16 +259,16 @@ public class RobotInterface : MonoBehaviour {
 				(ensureLinearity) ? "movel" : "movej" 
 				+ "("
 					+ "p[" 
-						+ position.x.ToString("F3") + ", "
-						+ position.y.ToString("F3") + ", "
-						+ position.z.ToString("F3") + ", "
-						+ eulerAngles.x.ToString("F3") + ", "
-						+ eulerAngles.y.ToString("F3") + ", "
-						+ eulerAngles.z.ToString("F3")
+						+ position.x.ToString("F4") + ", "
+						+ position.y.ToString("F4") + ", "
+						+ position.z.ToString("F4") + ", "
+						+ eulerAngles.x.ToString("F4") + ", "
+						+ eulerAngles.y.ToString("F4") + ", "
+						+ eulerAngles.z.ToString("F4")
 					+ "]"
-					+ "v=" + velocity.ToString("F3")
-					+ "a=" + acceleration.ToString("F3")
-				+ ")";
+					+ ", v=" + velocity.ToString("F4")
+					//+ ", a=" + acceleration.ToString("F4")
+				+ ")\n";
 		}
 	}
 

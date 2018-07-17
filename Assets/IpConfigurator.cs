@@ -32,6 +32,17 @@ public class IpConfigurator : MonoBehaviour {
 
 		gameObject.transform.position = Camera.main.transform.position + offset;
 		gameObject.transform.rotation = Quaternion.LookRotation(offset, new Vector3(0, 1, 0));
+
+		Vector3 position;
+		Quaternion rotation;
+
+		try {
+			if (RobotInterface.instance.GetFetchedRealPose(out position, out rotation)) {
+				OutputText.instance.text = OutputText.instance.text + "\n" + position.ToString() + " " + rotation.ToString();
+			}
+		} catch (Exception e) {
+			OutputText.instance.text = OutputText.instance.text + "\n" + e.Message + "\n" + e.StackTrace;
+		}
 	}
 
 	public void Close() {
@@ -129,10 +140,16 @@ public class IpConfigurator : MonoBehaviour {
 		}
 	}
 
-	public void onConnectSuccess() {
-		OneButtonAlert.Create("Connected successfully!");
-		SaveDefaults();
-		Close();
+	public void onConnectSuccess() { 
+		try {
+			OneButtonAlert.Create("Connected successfully!");
+			SaveDefaults();
+			Close();
+			RobotInterface.instance.Move(new RobotInterface.MoveCommand(new Vector3(0.0f, 0.0f, 0.5f), Quaternion.LookRotation(new Vector3(0.0f, 1.0f, 0.0f))));
+			RobotInterface.instance.FetchRealPose();
+		} catch (Exception e) {
+			OutputText.instance.text = OutputText.instance.text + "\n" + e.Message + "\n" + e.StackTrace;
+		}
 	}
 
 	public void onConnectFailure(string errorMessage) {

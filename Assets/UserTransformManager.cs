@@ -9,6 +9,7 @@ public class UserTransformManager : MonoBehaviour {
 	public static UserTransformManager instance;
 
 	public UserTransformRecordEnvironment recordEnvironment { get; private set; }
+	public UserTransformLiveEnvironment liveEnvironment { get; private set; }
 	public Arrow arrowPrefab;
 
 	private UserTransformable _focusedObject = null;
@@ -31,6 +32,12 @@ public class UserTransformManager : MonoBehaviour {
 	public bool isRecording {
 		get {
 			return recordEnvironment != null;
+		}
+	}
+
+	public bool isLive {
+		get {
+			return liveEnvironment != null;
 		}
 	}
 
@@ -64,6 +71,7 @@ public class UserTransformManager : MonoBehaviour {
 		instance = this;
 		focusedObject = null;
 		recordEnvironment = null;
+		liveEnvironment = null;
 	}
 
 	public void StartNewRecording(UserTransformableRecordable target) {
@@ -74,14 +82,18 @@ public class UserTransformManager : MonoBehaviour {
 		recordEnvironment = new UserTransformRecordEnvironment(target, filename);
 	}
 
-	public void SaveRecording(string filename) {
-		if(recordEnvironment != null) recordEnvironment.recording.Save(filename);
+	public void StartLiveSession(UserTransformableRecordable target) {
+		liveEnvironment = new UserTransformLiveEnvironment(target);
+		InvokeRepeating("liveEnvironment.UpdateRobot", 0.0f, 1.0f);
 	}
 
-	public void RunRecording() {
-		if(recordEnvironment != null) {
+	public void StopLiveSession() {
+		CancelInvoke("liveEnvironment.UpdateRobot");
+		liveEnvironment = null;
+	}
 
-		}
+	public void SaveRecording(string filename) {
+		if(recordEnvironment != null) recordEnvironment.recording.Save(filename);
 	}
 
 	public void StopRecording() {

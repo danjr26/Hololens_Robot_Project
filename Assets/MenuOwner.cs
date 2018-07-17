@@ -20,7 +20,6 @@ public class MenuOwner : MonoBehaviour {
 					BuildMenu();
 				} catch (Exception e) {
 					OutputText.instance.text = OutputText.instance.text + e.Message + "\n" + e.StackTrace;
-					//RobotInterface.instance.SendCommand(e.Message + "\n" + e.StackTrace);
 				}
 			}
 			else if (isMenuOpen) {

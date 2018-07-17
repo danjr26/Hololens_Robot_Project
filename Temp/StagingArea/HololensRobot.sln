@@ -4,9 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 15.7.27703.2042
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HololensRobot", "HololensRobot\HololensRobot.csproj", "{13A45C13-3265-47B8-BC48-A553B569DF55}"
-		{228b59f2-67f3-4557-9e37-ddaef3a98242} = {228b59f2-67f3-4557-9e37-ddaef3a98242}
+		{eb4cb878-e5a9-4960-b489-7d37bbebf23c} = {eb4cb878-e5a9-4960-b489-7d37bbebf23c}
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "C:\Users\danie\Documents\Hololens_Robot_Project\Build (XAML)\GeneratedProjects\UWP\Assembly-CSharp\Assembly-CSharp.csproj", "{228b59f2-67f3-4557-9e37-ddaef3a98242}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "C:\Users\danie\Documents\Hololens_Robot_Project\Build\GeneratedProjects\UWP\Assembly-CSharp\Assembly-CSharp.csproj", "{eb4cb878-e5a9-4960-b489-7d37bbebf23c}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -48,24 +48,24 @@ Global
 		{13A45C13-3265-47B8-BC48-A553B569DF55}.Release|x86.ActiveCfg = Release|x86
 		{13A45C13-3265-47B8-BC48-A553B569DF55}.Release|x86.Build.0 = Release|x86
 		{13A45C13-3265-47B8-BC48-A553B569DF55}.Release|x86.Deploy.0 = Release|x86
-		{228b59f2-67f3-4557-9e37-ddaef3a98242}.Debug|x86.ActiveCfg = Debug|x86
-		{228b59f2-67f3-4557-9e37-ddaef3a98242}.Debug|x86.Build.0 = Debug|x86
-		{228b59f2-67f3-4557-9e37-ddaef3a98242}.Release|x86.ActiveCfg = Release|x86
-		{228b59f2-67f3-4557-9e37-ddaef3a98242}.Release|x86.Build.0 = Release|x86
-		{228b59f2-67f3-4557-9e37-ddaef3a98242}.Master|x86.ActiveCfg = Master|x86
-		{228b59f2-67f3-4557-9e37-ddaef3a98242}.Master|x86.Build.0 = Master|x86
-		{228b59f2-67f3-4557-9e37-ddaef3a98242}.Debug|x64.ActiveCfg = Debug|x64
-		{228b59f2-67f3-4557-9e37-ddaef3a98242}.Debug|x64.Build.0 = Debug|x64
-		{228b59f2-67f3-4557-9e37-ddaef3a98242}.Release|x64.ActiveCfg = Release|x64
-		{228b59f2-67f3-4557-9e37-ddaef3a98242}.Release|x64.Build.0 = Release|x64
-		{228b59f2-67f3-4557-9e37-ddaef3a98242}.Master|x64.ActiveCfg = Master|x64
-		{228b59f2-67f3-4557-9e37-ddaef3a98242}.Master|x64.Build.0 = Master|x64
-		{228b59f2-67f3-4557-9e37-ddaef3a98242}.Debug|ARM.ActiveCfg = Debug|ARM
-		{228b59f2-67f3-4557-9e37-ddaef3a98242}.Debug|ARM.Build.0 = Debug|ARM
-		{228b59f2-67f3-4557-9e37-ddaef3a98242}.Release|ARM.ActiveCfg = Release|ARM
-		{228b59f2-67f3-4557-9e37-ddaef3a98242}.Release|ARM.Build.0 = Release|ARM
-		{228b59f2-67f3-4557-9e37-ddaef3a98242}.Master|ARM.ActiveCfg = Master|ARM
-		{228b59f2-67f3-4557-9e37-ddaef3a98242}.Master|ARM.Build.0 = Master|ARM
+		{eb4cb878-e5a9-4960-b489-7d37bbebf23c}.Debug|x86.ActiveCfg = Debug|x86
+		{eb4cb878-e5a9-4960-b489-7d37bbebf23c}.Debug|x86.Build.0 = Debug|x86
+		{eb4cb878-e5a9-4960-b489-7d37bbebf23c}.Release|x86.ActiveCfg = Release|x86
+		{eb4cb878-e5a9-4960-b489-7d37bbebf23c}.Release|x86.Build.0 = Release|x86
+		{eb4cb878-e5a9-4960-b489-7d37bbebf23c}.Master|x86.ActiveCfg = Master|x86
+		{eb4cb878-e5a9-4960-b489-7d37bbebf23c}.Master|x86.Build.0 = Master|x86
+		{eb4cb878-e5a9-4960-b489-7d37bbebf23c}.Debug|x64.ActiveCfg = Debug|x64
+		{eb4cb878-e5a9-4960-b489-7d37bbebf23c}.Debug|x64.Build.0 = Debug|x64
+		{eb4cb878-e5a9-4960-b489-7d37bbebf23c}.Release|x64.ActiveCfg = Release|x64
+		{eb4cb878-e5a9-4960-b489-7d37bbebf23c}.Release|x64.Build.0 = Release|x64
+		{eb4cb878-e5a9-4960-b489-7d37bbebf23c}.Master|x64.ActiveCfg = Master|x64
+		{eb4cb878-e5a9-4960-b489-7d37bbebf23c}.Master|x64.Build.0 = Master|x64
+		{eb4cb878-e5a9-4960-b489-7d37bbebf23c}.Debug|ARM.ActiveCfg = Debug|ARM
+		{eb4cb878-e5a9-4960-b489-7d37bbebf23c}.Debug|ARM.Build.0 = Debug|ARM
+		{eb4cb878-e5a9-4960-b489-7d37bbebf23c}.Release|ARM.ActiveCfg = Release|ARM
+		{eb4cb878-e5a9-4960-b489-7d37bbebf23c}.Release|ARM.Build.0 = Release|ARM
+		{eb4cb878-e5a9-4960-b489-7d37bbebf23c}.Master|ARM.ActiveCfg = Master|ARM
+		{eb4cb878-e5a9-4960-b489-7d37bbebf23c}.Master|ARM.Build.0 = Master|ARM
  EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

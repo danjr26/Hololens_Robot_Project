@@ -40,19 +40,23 @@ namespace Assets {
 		}
 
 		public async Task Execute(Transform frameOfReference) {
-			if(!RobotInterface.instance.isConnected) {
-				GameObject alert = TwoButtonAlert.Create(
-					"Cannot run recording without established network connection. Would you like to set up a connection?\n" +
-					"(Connections can also be created from the main menu.)"
-				);
-				alert.GetComponent<TwoButtonAlert>().button1.text = "Yes";
-				alert.GetComponent<TwoButtonAlert>().button1.onClick = delegate () { UnityEngine.Object.Destroy(alert);  IpConfigurator.instance.Open(); };
-				alert.GetComponent<TwoButtonAlert>().button2.text = "Cancel";
-				alert.GetComponent<TwoButtonAlert>().button2.onClick = delegate () { UnityEngine.Object.Destroy(alert); };
-				return;
-			}
-			foreach(UserTransformKeyframe keyframe in keyframes) {
-				await keyframe.Execute(frameOfReference);
+			try {
+				if (!RobotInterface.instance.isConnectedToCommand) {
+					GameObject alert = TwoButtonAlert.Create(
+						"Cannot run recording without established network connection. Would you like to set up a connection?\n" +
+						"(Connections can also be created from the main menu.)"
+					);
+					alert.GetComponent<TwoButtonAlert>().button1.text = "Yes";
+					alert.GetComponent<TwoButtonAlert>().button1.onClick = delegate () { IpConfigurator.instance.Open(); UnityEngine.Object.Destroy(alert); };
+					alert.GetComponent<TwoButtonAlert>().button2.text = "Cancel";
+					alert.GetComponent<TwoButtonAlert>().button2.onClick = delegate () { UnityEngine.Object.Destroy(alert); };
+					return;
+				}
+				foreach (UserTransformKeyframe keyframe in keyframes) {
+					await keyframe.Execute(frameOfReference);
+				}
+			} catch(Exception e) {
+				OutputText.instance.text = OutputText.instance.text + "\n" + e.Message + "\n" + e.StackTrace;
 			}
 		}
 

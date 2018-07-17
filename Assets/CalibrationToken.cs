@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class CalibrationToken : UserTransformable {
 	public static CalibrationToken instance;
+
 	Vector3[] points = {
 		new Vector3(0.0f, 0.0f, -0.5f),
 		new Vector3(0.5f, 0.0f, 0.0f),
@@ -25,8 +26,9 @@ public class CalibrationToken : UserTransformable {
 	void ConfirmPoint() {
 		try {
 			confirmedPoints[pointIndex] = transform.position;
-			if (pointIndex < 3) {
-				if (RobotInterface.instance.isConnected) {
+			pointIndex++;
+			if (pointIndex < 4) {
+				if (RobotInterface.instance.isConnectedToCommand) {
 					RobotInterface.instance.Move(new RobotInterface.MoveCommand(
 						points[pointIndex], Quaternion.LookRotation(points[pointIndex])
 					));
@@ -37,7 +39,6 @@ public class CalibrationToken : UserTransformable {
 				GetComponent<MeshRenderer>().enabled = false;
 				GetComponent<MeshCollider>().enabled = false;
 			}
-			pointIndex++;
 		}
 		catch (Exception e) {
 			OutputText.instance.text = e.Message + "\n" + e.StackTrace;
@@ -50,9 +51,12 @@ public class CalibrationToken : UserTransformable {
 
 		for (int i = 0; i < 4; i++) {
 			center += confirmedPoints[i];
-			rotations[i] = Quaternion.FromToRotation(points[i], confirmedPoints[i]);  
 		}
 		center /= 4;
+
+		for (int i = 0; i < 4; i++) {
+			rotations[i] = Quaternion.FromToRotation(points[i] - center, confirmedPoints[i]);
+		}
 
 		transform.parent.SetPositionAndRotation(
 			center,
@@ -68,7 +72,7 @@ public class CalibrationToken : UserTransformable {
 		try {
 			pointIndex = 0;
 
-			if (RobotInterface.instance.isConnected) {
+			if (RobotInterface.instance.isConnectedToCommand) {
 				RobotInterface.instance.Move(new RobotInterface.MoveCommand(
 					points[pointIndex], Quaternion.LookRotation(points[pointIndex])
 				));
