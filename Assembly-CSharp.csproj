@@ -80,6 +80,7 @@
     <Compile Include="Assets\OneButtonAlert.cs" />
     <Compile Include="Assets\OutputText.cs" />
     <Compile Include="Assets\RobotInterface.cs" />
+    <Compile Include="Assets\RobotPathCalculator.cs" />
     <Compile Include="Assets\TestButtonScript.cs" />
     <Compile Include="Assets\TwoButtonAlert.cs" />
     <Compile Include="Assets\UserTransformable.cs" />

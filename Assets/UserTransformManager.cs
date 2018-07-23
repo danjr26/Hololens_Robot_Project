@@ -84,12 +84,16 @@ public class UserTransformManager : MonoBehaviour {
 
 	public void StartLiveSession(UserTransformableRecordable target) {
 		liveEnvironment = new UserTransformLiveEnvironment(target);
-		InvokeRepeating("liveEnvironment.UpdateRobot", 0.0f, 1.0f);
+		InvokeRepeating("UpdateLiveSession", 0.0f, 0.1f);
 	}
 
 	public void StopLiveSession() {
-		CancelInvoke("liveEnvironment.UpdateRobot");
+		CancelInvoke("UpdateLiveSession");
 		liveEnvironment = null;
+	}
+
+	private void UpdateLiveSession() {
+		liveEnvironment.UpdateRobot();
 	}
 
 	public void SaveRecording(string filename) {

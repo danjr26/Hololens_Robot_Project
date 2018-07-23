@@ -21,16 +21,20 @@ public class RobotInterface : MonoBehaviour {
 	public bool isConnectedToCommand { get; private set; }
 	public bool isConnectedToRegister { get; private set; }
 
+	public bool robotIsMoving { get; private set; }
+
 	const uint fetchBufferMaxLength = 1024;
 	uint fetchBufferLength = 0;
 	private byte[] fetchBuffer = new byte[fetchBufferMaxLength];
-	bool isFetching = false;
+	public bool isFetching { get; private set; }
 
 	public Action onConnectSuccess = null;
 	public Action<string> onConnectFailure = null;
 	public Action onDisconnect = null;
 	public Action onCommandSendSuccess = null;
 	public Action<string> onCommandSendFailure = null;
+
+	private Queue<IMoveCommand> moveQueue = new Queue<IMoveCommand>();
 
 #if NETFX_CORE
 	StreamSocket commandSocket;
@@ -44,10 +48,40 @@ public class RobotInterface : MonoBehaviour {
 	void Awake() {
 		instance = this;
 		isConnectedToCommand = false;
+		isConnectedToRegister = false;
+		isFetching = false;
+		robotIsMoving = false;
 	}
 
 	void Start() {
 		instance = this;
+		InvokeRepeating("ProcessMoveQueue", 0.0f, 0.015f);
+	}
+
+	private void ProcessMoveQueue() {
+		float[] jointSpeeds;
+		bool robotWasMoving = robotIsMoving;
+		if (GetFetchedRealJointSpeeds(out jointSpeeds)) {
+			robotIsMoving = false;
+			float max = 0.0f;
+			for (uint i = 0; i < 6; i++) {
+				if (Mathf.Abs(jointSpeeds[i]) > 1.0f) {
+					robotIsMoving = true;
+				}
+				if (Mathf.Abs(jointSpeeds[i]) > max) max = Mathf.Abs(jointSpeeds[i]);
+ 			}
+			OutputText.instance.text = max.ToString("F4");
+		}
+
+		if (moveQueue.Count > 0 && !robotIsMoving) {
+			MoveNow(moveQueue.Dequeue());
+			robotIsMoving = true;
+			CancelInvoke("ProcessMoveQueue");
+			InvokeRepeating("ProcessMoveQueue", 0.5f, 0.015f);
+		}
+		else if (!isFetching) {
+			FetchRealJointSpeeds();
+		}
 	}
 
 	public async Task StartConnection(string ip, string socketName) {
@@ -93,12 +127,14 @@ public class RobotInterface : MonoBehaviour {
 	public async Task EndConnection() {
 #if NETFX_CORE
 		try {
+			CancelQueuedMoves();
+
 			isConnectedToCommand = false;
 			await commandSocket.CancelIOAsync();
 			commandSocket.Dispose();
 			commandSocket = null;
 
-			isConnectedToRegister = true;
+			isConnectedToRegister = false;
 			await registerSocket.CancelIOAsync();
 			registerSocket.Dispose();
 			registerSocket = null;
@@ -171,8 +207,16 @@ public class RobotInterface : MonoBehaviour {
 #endif
 	}
 
-	public async Task Move(MoveCommand command) {
+	public void QueueMove(IMoveCommand command) {
+		moveQueue.Enqueue(command);
+	}
+
+	public async Task MoveNow(IMoveCommand command) {
 		await SendCommand(command.ToURCommand());
+	}
+
+	public void CancelQueuedMoves() {
+		moveQueue.Clear();
 	}
 
 	public async Task FetchRealPose() {
@@ -185,16 +229,25 @@ public class RobotInterface : MonoBehaviour {
 			0x01, 0x90,
 			0x00, 0x06
 		};
-		/*
-		string fetchRequest =
-			  "\x00\x04"    // transaction pairing header
-			+ "\x00\x00"    // MODBUS protocol identifier
-			+ "\x00\x06"    // 6 more bytes
-			+ "\x00"        // unit identifier
-			+ "\x03"        // MODBUS request type (read holding registers)
-			+ "\x01\x90"    // register starting address (400)
-			+ "\x00\x06";   // 6 registers
-			*/
+
+		while (isFetching) ;
+		isFetching = true;
+		await SendRequest(fetchRequest);
+		await RecieveRequestResponse();
+		isFetching = false;
+	}
+
+	public async Task FetchRealJointSpeeds() {
+		byte[] fetchRequest = {
+			0x00, 0x04,
+			0x00, 0x00,
+			0x00, 0x06,
+			0x00,
+			0x03,
+			0x01, 0x18,
+			0x00, 0x06
+		};
+
 		while (isFetching) ;
 		isFetching = true;
 		await SendRequest(fetchRequest);
@@ -239,37 +292,106 @@ public class RobotInterface : MonoBehaviour {
 		}
 	}
 
-	public class MoveCommand {
+	public bool GetFetchedRealJointSpeeds(out float[] speeds) {
+		if (fetchBufferLength == 0) {
+			speeds = new float[6];
+			return false;
+		}
+		else {
+			if (fetchBufferLength != 2 + 12 || fetchBuffer[0] != 0x03 || fetchBuffer[1] != 12) {
+				throw new InvalidDataException("Invalid MODBUS response. Dump: " + fetchBufferLength.ToString() + " " + fetchBuffer[0].ToString() + " " + fetchBuffer[1].ToString());
+			}
+
+			short[] registerData = new short[6];
+			for (uint i = 0; i < 6; i++) {
+				registerData[i] = (short)((fetchBuffer[2 + i * 2] << 8) | fetchBuffer[2 + i * 2 + 1]);
+			}
+
+			speeds = new float[6];
+			for(uint i = 0; i < 6; i++) {
+				speeds[i] = ((float)registerData[i]) / 1000.0f * Mathf.Rad2Deg;
+			}
+
+			fetchBufferLength = 0;
+
+			return true;
+		}
+	}
+
+	public interface IMoveCommand {
+		string ToURCommand();
+	}
+
+	public class MoveToPoseCommand : IMoveCommand {
 		public bool ensureLinearity = false;
 		public Vector3 position;
 		public Quaternion rotation;
-		public float velocity = 0.3f;
+		public float velocity = 1.0f;
 		public float acceleration = 0.3f;
 
-		public MoveCommand(Vector3 endpoint, Quaternion orientation) {
-			Quaternion frameFixer = Quaternion.Euler(90, 0, 0);
-			position = frameFixer * endpoint;
-			rotation = orientation * frameFixer;
-			OutputText.instance.text = OutputText.instance.text + "\n" + ToURCommand();
+		public MoveToPoseCommand(Vector3 endpoint, Quaternion orientation) {
+			position = endpoint;
+			rotation = orientation;
 		}
 
 		public string ToURCommand() {
-			Vector3 eulerAngles = rotation.eulerAngles * Mathf.Deg2Rad;
+			Vector3 usedPosition = Quaternion.Euler(90, 0, 0) * position;
+			usedPosition.x = -usedPosition.x;
+
+			Vector3 axis;
+			float angle;
+			rotation.ToAngleAxis(out angle, out axis);
+
+			axis = Quaternion.Euler(90, 0, 0) * axis;
+			axis.y = -axis.y;
+			axis.z = -axis.z;
+
+			Vector3 usedRotation = axis * angle * Mathf.Deg2Rad;
+
 			return
 				(ensureLinearity) ? "movel" : "movej" 
 				+ "("
 					+ "p[" 
-						+ position.x.ToString("F4") + ", "
-						+ position.y.ToString("F4") + ", "
-						+ position.z.ToString("F4") + ", "
-						+ eulerAngles.x.ToString("F4") + ", "
-						+ eulerAngles.y.ToString("F4") + ", "
-						+ eulerAngles.z.ToString("F4")
+						+ usedPosition.x.ToString("F4") + ", "
+						+ usedPosition.y.ToString("F4") + ", "
+						+ usedPosition.z.ToString("F4") + ", "
+						+ usedRotation.x.ToString("F4") + ", "
+						+ usedRotation.y.ToString("F4") + ", "
+						+ usedRotation.z.ToString("F4")
 					+ "]"
 					+ ", v=" + velocity.ToString("F4")
-					//+ ", a=" + acceleration.ToString("F4")
+					//+ ", r=0.01"
 				+ ")\n";
 		}
+	}
+
+	public class MoveJointsCommand : IMoveCommand {
+		public bool ensureLinearity = false;
+		public float[] jointAngles = new float[6];
+		public float velocity = 1.0f;
+		public float acceleration = 0.3f;
+
+		public MoveJointsCommand(float[] jointAngles) {
+			this.jointAngles = jointAngles;
+		}
+
+		public string ToURCommand() {
+			return
+				(ensureLinearity) ? "movel" : "movej"
+				+ "("
+					+ "["
+						+ (jointAngles[0]).ToString("F4") + ", "
+						+ (jointAngles[1]).ToString("F4") + ", "
+						+ (jointAngles[2]).ToString("F4") + ", "
+						+ (jointAngles[3]).ToString("F4") + ", "
+						+ (jointAngles[4]).ToString("F4") + ", "
+						+ (jointAngles[5]).ToString("F4")
+					+ "]"
+					+ ", v=" + velocity.ToString("F4")
+				+ ")\n";
+		}
+
+
 	}
 
 	/*

@@ -35,8 +35,9 @@ namespace Assets {
 		}
 
 		public async Task Execute(Transform frameOfReference) {
-			RobotInterface.MoveCommand command = new RobotInterface.MoveCommand(frameOfReference.TransformPoint(localPosition), frameOfReference.rotation * localRotation);
-			await RobotInterface.instance.Move(command);
+			RobotInterface.MoveToPoseCommand command = new RobotInterface.MoveToPoseCommand(localPosition, localRotation);
+			command.velocity = 1.5f;
+			RobotInterface.instance.QueueMove(command);
 			await ExecuteActions(frameOfReference);
 		}
 
@@ -89,7 +90,11 @@ namespace Assets {
 		}
 
 		public UserTransformableGhost CreateGhost(UserTransformableRecordable target) {
-			GameObject ghostObject = GameObject.Instantiate(target, localPosition, localRotation, target.transform.parent).gameObject;
+			GameObject ghostObject = GameObject.Instantiate(target, target.transform.parent).gameObject;
+			ghostObject.transform.localPosition = localPosition;
+			ghostObject.transform.localRotation = localRotation;
+
+			OutputText.instance.text = OutputText.instance.text + localPosition.ToString("F3") + localRotation.ToString("F3");
 
 			ghostObject.GetComponent<UserTransformableRecordable>().enabled = false;
 

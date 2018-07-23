@@ -7,17 +7,13 @@ public class CalibrationToken : UserTransformable {
 	public static CalibrationToken instance;
 
 	Vector3[] points = {
-		new Vector3(0.0f, 0.0f, -0.5f),
-		new Vector3(0.5f, 0.0f, 0.0f),
 		new Vector3(0.0f, 0.0f, 0.5f),
-		new Vector3(-0.5f, 0.0f, 0.0f)
+		new Vector3(0.0f, 0.0f, -0.5f),
 	};
 
-	Vector3[] confirmedPoints = new Vector3[4];
+	Vector3[] confirmedPoints = new Vector3[2];
 
-	Transform conversion;
-
-	uint pointIndex;
+	uint pointIndex = 0;
 
 	private void Awake() {
 		instance = this;
@@ -27,14 +23,22 @@ public class CalibrationToken : UserTransformable {
 		try {
 			confirmedPoints[pointIndex] = transform.position;
 			pointIndex++;
-			if (pointIndex < 4) {
+			if (pointIndex < 2) {
 				if (RobotInterface.instance.isConnectedToCommand) {
-					RobotInterface.instance.Move(new RobotInterface.MoveCommand(
-						points[pointIndex], Quaternion.LookRotation(points[pointIndex])
+
+					RobotInterface.instance.QueueMove(new RobotInterface.MoveJointsCommand(
+					new float[] { 0, -Mathf.PI / 2.0f, 0.01f, -Mathf.PI / 2.0f, 0, 0 }
+				));
+
+					RobotInterface.instance.QueueMove(new RobotInterface.MoveToPoseCommand(
+						points[pointIndex], Quaternion.identity
 					));
 				}
 				UserTransformManager.instance.transformMode = UserTransformManager.TransformMode.translate;
 			} else {
+				RobotInterface.instance.QueueMove(new RobotInterface.MoveJointsCommand(
+					new float[] { 0, -Mathf.PI / 2.0f, 0.01f, -Mathf.PI / 2.0f, 0, 0 }
+				));
 				CalculateConversion();
 				GetComponent<MeshRenderer>().enabled = false;
 				GetComponent<MeshCollider>().enabled = false;
@@ -47,25 +51,16 @@ public class CalibrationToken : UserTransformable {
 
 	void CalculateConversion() {
 		Vector3 center = new Vector3(0, 0, 0);
-		Quaternion[] rotations = new Quaternion[4];
 
-		for (int i = 0; i < 4; i++) {
+		for (int i = 0; i < 2; i++) {
 			center += confirmedPoints[i];
+			confirmedPoints[i].y = 0.0f;
 		}
-		center /= 4;
+		center /= 2;
 
-		for (int i = 0; i < 4; i++) {
-			rotations[i] = Quaternion.FromToRotation(points[i] - center, confirmedPoints[i]);
-		}
+		Quaternion rotation = Quaternion.FromToRotation(points[0] - points[1], confirmedPoints[0] - confirmedPoints[1]);
 
-		transform.parent.SetPositionAndRotation(
-			center,
-			Quaternion.Slerp(
-				Quaternion.Slerp(rotations[0], rotations[2], 0.5f),
-				Quaternion.Slerp(rotations[1], rotations[3], 0.5f), 
-				0.5f
-			)
-		);
+		transform.parent.SetPositionAndRotation(center, rotation);
 	}
 
 	public void BeginCalibration() {
@@ -73,9 +68,15 @@ public class CalibrationToken : UserTransformable {
 			pointIndex = 0;
 
 			if (RobotInterface.instance.isConnectedToCommand) {
-				RobotInterface.instance.Move(new RobotInterface.MoveCommand(
+
+				RobotInterface.instance.QueueMove(new RobotInterface.MoveJointsCommand(
+					new float[] { 0, -Mathf.PI / 2.0f, 0.01f, -Mathf.PI / 2.0f, 0, 0 }
+				));
+
+				RobotInterface.instance.QueueMove(new RobotInterface.MoveToPoseCommand(
 					points[pointIndex], Quaternion.LookRotation(points[pointIndex])
 				));
+
 			}
 
 			gameObject.transform.position = Camera.main.transform.position + Camera.main.transform.forward * 0.4f;

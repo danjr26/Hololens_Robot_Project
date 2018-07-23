@@ -20,6 +20,7 @@ public class IpConfigurator : MonoBehaviour {
 		gameObject.transform.Find("IPConfirm").GetComponent<MenuButton>().onClick = delegate () { TryConnect(); };
 		gameObject.transform.Find("IPCancel").GetComponent<MenuButton>().onClick = delegate () { Close(); };
 		Close();
+		Open();
 	}
 
 	public void Open() {
@@ -145,7 +146,7 @@ public class IpConfigurator : MonoBehaviour {
 			OneButtonAlert.Create("Connected successfully!");
 			SaveDefaults();
 			Close();
-			RobotInterface.instance.Move(new RobotInterface.MoveCommand(new Vector3(0.0f, 0.0f, 0.5f), Quaternion.LookRotation(new Vector3(0.0f, 1.0f, 0.0f))));
+			RobotInterface.instance.MoveNow(new RobotInterface.MoveJointsCommand(new float[] { 0, -Mathf.PI / 2.0f, Mathf.PI / 2.0f, -Mathf.PI / 2.0f, 0, 0 }));
 			RobotInterface.instance.FetchRealPose();
 		} catch (Exception e) {
 			OutputText.instance.text = OutputText.instance.text + "\n" + e.Message + "\n" + e.StackTrace;
