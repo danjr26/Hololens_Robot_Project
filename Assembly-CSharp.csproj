@@ -82,6 +82,7 @@
     <Compile Include="Assets\RobotInterface.cs" />
     <Compile Include="Assets\RobotPathCalculator.cs" />
     <Compile Include="Assets\TestButtonScript.cs" />
+    <Compile Include="Assets\thing.cs" />
     <Compile Include="Assets\TwoButtonAlert.cs" />
     <Compile Include="Assets\UserTransformable.cs" />
     <Compile Include="Assets\UserTransformableAnchor.cs" />

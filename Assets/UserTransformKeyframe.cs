@@ -94,13 +94,15 @@ namespace Assets {
 			ghostObject.transform.localPosition = localPosition;
 			ghostObject.transform.localRotation = localRotation;
 
-			OutputText.instance.text = OutputText.instance.text + localPosition.ToString("F3") + localRotation.ToString("F3");
+			OutputText.instance.text = OutputText.instance.text + localPosition.ToString("F3") + localRotation.ToString("F3") + "\n";
 
 			ghostObject.GetComponent<UserTransformableRecordable>().enabled = false;
 
 			if (ghostObject.GetComponent<UserTransformableGhost>() == null) ghostObject.AddComponent<UserTransformableGhost>();
+			OutputText.instance.text = OutputText.instance.text + "point1\n";
 			UserTransformableGhost ghost = ghostObject.GetComponent<UserTransformableGhost>();
 			ghost.enabled = true;
+			OutputText.instance.text = OutputText.instance.text + "point2\n";
 			ghost.GhostifyRenderer();
 			ghost.BindKeyframe(this);
 

@@ -23,7 +23,9 @@ public class UserTransformableGhost : UserTransformable {
 			Color color = renderer.material.color;
 			color.a = 0.4f;
 			renderer.material.color = color;
+			OutputText.instance.text = OutputText.instance.text + "point3\n";
 		}
+
 	}
 
 	public void DeghostifyRenderer() {
@@ -46,7 +48,10 @@ public class UserTransformableGhost : UserTransformable {
 	public void MakeSuccessorTo(UserTransformableGhost newPredecessor) {
 		predecessor = newPredecessor;
 		if (predecessor == null) {
-			if (arrow != null) Destroy(arrow);
+			if (arrow != null) {
+				Destroy(arrow);
+				arrow = null;
+			}
 		}
 		else {
 			if (arrow == null) arrow = Instantiate(arrowPrefab, gameObject.transform.parent);

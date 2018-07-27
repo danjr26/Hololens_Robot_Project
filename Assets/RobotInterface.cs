@@ -22,6 +22,7 @@ public class RobotInterface : MonoBehaviour {
 	public bool isConnectedToRegister { get; private set; }
 
 	public bool robotIsMoving { get; private set; }
+	bool robotHasMoved = true;
 
 	const uint fetchBufferMaxLength = 1024;
 	uint fetchBufferLength = 0;
@@ -60,24 +61,25 @@ public class RobotInterface : MonoBehaviour {
 
 	private void ProcessMoveQueue() {
 		float[] jointSpeeds;
-		bool robotWasMoving = robotIsMoving;
 		if (GetFetchedRealJointSpeeds(out jointSpeeds)) {
 			robotIsMoving = false;
 			float max = 0.0f;
 			for (uint i = 0; i < 6; i++) {
-				if (Mathf.Abs(jointSpeeds[i]) > 1.0f) {
+				if (Mathf.Abs(jointSpeeds[i]) > 0.0f) {
 					robotIsMoving = true;
+					robotHasMoved = true;
 				}
 				if (Mathf.Abs(jointSpeeds[i]) > max) max = Mathf.Abs(jointSpeeds[i]);
  			}
-			OutputText.instance.text = max.ToString("F4");
+			//OutputText.instance.text = max.ToString("F4");
 		}
 
-		if (moveQueue.Count > 0 && !robotIsMoving) {
+		if (moveQueue.Count > 0 && robotHasMoved && !robotIsMoving) {
 			MoveNow(moveQueue.Dequeue());
 			robotIsMoving = true;
+			robotHasMoved = false;
 			CancelInvoke("ProcessMoveQueue");
-			InvokeRepeating("ProcessMoveQueue", 0.5f, 0.015f);
+			InvokeRepeating("ProcessMoveQueue", 0.25f, 0.015f);
 		}
 		else if (!isFetching) {
 			FetchRealJointSpeeds();

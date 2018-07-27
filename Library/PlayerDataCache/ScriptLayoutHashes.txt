@@ -188,3 +188,4 @@ c2275a8bfbb9f9942cad75ecdfded41d UnityEngine.HoloLens.dll:UnityEngine.XR.WSA.Spa
 65f5007ab13a67892b12c85d0def057f Assembly-CSharp.dll:.UserTransformableRecordable
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.OneButtonAlert
 aeccb0209693623450b4a7310fe95c1a Assembly-CSharp.dll:.AnchorManager
+05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.thing

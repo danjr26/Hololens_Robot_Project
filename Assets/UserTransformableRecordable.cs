@@ -18,7 +18,7 @@ public class UserTransformableRecordable : UserTransformable {
 				delegate () {
 					isMenuOpen = false;
 					UserTransformManager.instance.recordEnvironment.CreateSnapshot(gameObject.transform);
-					gameObject.transform.Translate(Camera.main.transform.right * 0.01f);
+					gameObject.transform.Translate(Camera.main.transform.right * 0.02f);
 				}
 			);
 			menu.GetComponent<ObjectMenu>().AddButton(
